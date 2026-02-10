@@ -2,3 +2,5 @@
 ./appli/metier/Lecture.java
 ./appli/metier/Sommet.java
 ./appli/Controleur.java
+./appli/ihm/Appli.java
+./appli/ihm/Menu.java
