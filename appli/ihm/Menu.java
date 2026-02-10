@@ -16,6 +16,9 @@ public class Menu extends JPanel
     {
         this.setLayout(new FlowLayout(FlowLayout.LEFT));
 
+
+        /*Création des composants */
+
         this.menuBar = new JMenuBar();
         this.menuFichier = new JMenu  ("  📁 Fichier  ");
         this.menuEdition = new JMenu  ("  ✏️ Editer  " );
@@ -25,6 +28,9 @@ public class Menu extends JPanel
         this.menuFichier.addSeparator();
         this.menuFichier.add(new JMenuItem("❌ Quitter"       ));
 
+
+        /*Position des composants */
+        
         this.menuBar.add(this.menuFichier);
         this.menuBar.add(this.menuEdition);
 
