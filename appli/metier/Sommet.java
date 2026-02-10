@@ -1,12 +1,12 @@
-package metier;
+package appli.metier;
 import java.util.ArrayList;
 
 public class Sommet
 {
     private String nom;
-    private ArrayList<String> liens;
+    private ArrayList<Lien> liens;
 
-    public Sommet(String nom, ArrayList<String> liens)
+    public Sommet(String nom, ArrayList<Lien> liens)
     {
         this.nom = nom;
         this.liens = liens;
@@ -15,7 +15,7 @@ public class Sommet
     public Sommet(String nom)
     {
         this.nom = nom;
-        this.liens = new ArrayList<String>();
+        this.liens = new ArrayList<Lien>();
     }
 
     /*
@@ -27,7 +27,7 @@ public class Sommet
         return nom;
     }
 
-    public ArrayList<String> getLiens()
+    public ArrayList<Lien> getLiens()
     {
         return liens;
     }
@@ -40,7 +40,7 @@ public class Sommet
         this.nom = nom;
     }
 
-    public void setLiens(ArrayList<String> liens)
+    public void setLiens(ArrayList<Lien> liens)
     {
         this.liens = liens;
     }
