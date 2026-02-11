@@ -45,4 +45,9 @@ public class Cercle
     {
         return nom;
     }
+
+    public int getRayon()
+    {
+        return rayon;
+    }
 }

@@ -17,7 +17,7 @@ public class Lien
 
     public void dessiner(Graphics2D g)
     {
-        g.drawLine(c1.getX(), c1.getY(), c2.getX(), c2.getY());
+        g.drawLine(c1.getX() + c1.getRayon(), c1.getY(), c2.getX() - c2.getRayon(), c2.getY());
         
         int mx = (c1.getX() + c2.getX()) / 2;
         int my = (c1.getY() + c2.getY()) / 2;

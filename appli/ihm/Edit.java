@@ -11,7 +11,6 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
-import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -19,7 +18,7 @@ import java.util.ArrayList;
 import appli.metier.Sommet;
 import appli.metier.Lien;
 import javax.swing.JButton;
-import javax.swing.JOptionPane;
+import appli.Controleur;
 
 public class Edit extends JPanel implements ActionListener
 {
@@ -36,6 +35,10 @@ public class Edit extends JPanel implements ActionListener
     private DefaultTableModel tableModel;
     private Appli appli;
 
+    /*panel graphe */
+    private GrapheCopie graphe;
+    private ArrayList<Sommet> sommets;
+
     public Edit(Controleur ctrl, Appli appli)
     {
         this.ctrl = ctrl;
@@ -51,6 +54,11 @@ public class Edit extends JPanel implements ActionListener
 
         panelDocument.add(lblDocument, BorderLayout.NORTH);
         panelDocument.add(new JScrollPane(this.txtDocument), BorderLayout.CENTER);
+
+        /*Panel Graphe */
+        this.sommets = new ArrayList<>();
+        this.graphe = new GrapheCopie(this);
+
 
         /*Panel Tableau */
         JPanel panelTableau = new JPanel(new BorderLayout());
@@ -79,9 +87,15 @@ public class Edit extends JPanel implements ActionListener
         panelTableau.add(panelTableauNorth, BorderLayout.NORTH);
         panelTableau.add(new JScrollPane(this.table), BorderLayout.CENTER);
 
+
+        /*Panel TabGraphe */
+        JPanel panelTabGraph = new JPanel(new GridLayout(2,1));
+        panelTabGraph.add(panelTableau);
+        panelTabGraph.add(this.graphe);
+
         /*Position des composants */    
         this.add(panelDocument, BorderLayout.WEST);
-        this.add(panelTableau, BorderLayout.CENTER);
+        this.add(panelTabGraph, BorderLayout.CENTER);
 
 
         /*Activation */
@@ -123,8 +137,9 @@ public class Edit extends JPanel implements ActionListener
 
     public void creationTableau()
     {
-        ArrayList<Sommet> sommets = new ArrayList<>();
-        sommets = this.ctrl.getSommets();
+        this.sommets = new ArrayList<>();
+        this.sommets = this.ctrl.getSommets();
+        this.graphe.actualiser();
         this.tableModel.setRowCount(0);
         for (Sommet sommet : sommets)
         {
@@ -151,6 +166,11 @@ public class Edit extends JPanel implements ActionListener
             this.table.revalidate();
             this.table.repaint();
         }
+    }
+
+    public ArrayList<Sommet> getSommets()
+    {
+        return this.sommets;
     }
 
 }

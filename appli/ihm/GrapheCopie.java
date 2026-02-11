@@ -1,52 +1,62 @@
 package appli.ihm;
 
-import javax.swing.JPanel;
+import appli.ihm.dessin.*;
+import appli.metier.Sommet;
+import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
-
-import appli.Controleur;
-import appli.ihm.dessin.*;
-import appli.metier.Sommet;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
+import javax.swing.JPanel;
 
-public class Graphe extends JPanel
+public class GrapheCopie extends JPanel
 {
-    private Controleur ctrl;
-
+    private Edit edit;
     private ArrayList<Cercle> sommets;
     private ArrayList<appli.ihm.dessin.Lien> liens;
 
-
-    public Graphe(Controleur ctrl)
+    public GrapheCopie(Edit edit)
     {
-        this.ctrl = ctrl;
+        this.edit = edit;
         this.sommets = new ArrayList<>();
         this.liens = new ArrayList<>();
         
-        /* Création des composants */
-        if(this.ctrl.getSommets() != null && !this.ctrl.getSommets().isEmpty())
+        // Définir une taille préférée et une couleur de fond
+        this.setPreferredSize(new java.awt.Dimension(600, 300));
+        this.setBackground(Color.WHITE);
+    }
+
+    public void actualiser()
+    {
+        System.out.println("=== ACTUALISATION GRAPHE COPIE ===");
+        
+        // Vider les listes
+        this.sommets.clear();
+        this.liens.clear();
+        
+        ArrayList<Sommet> sommetsMetier = this.edit.getSommets();
+        
+        if(sommetsMetier != null && !sommetsMetier.isEmpty())
         {
-            System.out.println("Nombre de sommets: " + this.ctrl.getSommets().size());
+            System.out.println("Nombre de sommets métier: " + sommetsMetier.size());
             
             // Calculer les niveaux de profondeur pour chaque sommet (BFS)
-            HashMap<String, Integer> niveaux = calculerNiveaux();
+            HashMap<String, Integer> niveaux = calculerNiveaux(sommetsMetier);
             HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
             
-            int espaceHorizontal = 150;  // Espace entre colonnes
-            int espaceVertical = 100;    // Espace entre lignes
-            int margeGauche = 100;
-            int margeHaut = 100;
+            int espaceHorizontal = 100;  // Espace entre colonnes
+            int espaceVertical = 60;     // Espace entre lignes
+            int margeGauche = 50;
+            int margeHaut = 50;
             
             // Création des cercles pour chaque sommet
-            for(int cpt = 0; cpt < this.ctrl.getSommets().size(); cpt++)
+            for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
             {
-                Sommet sommetMetier = this.ctrl.getSommets().get(cpt);
+                Sommet sommetMetier = sommetsMetier.get(cpt);
                 String nomSommet = sommetMetier.getNom();
                 
                 // Récupérer le niveau de profondeur
@@ -60,17 +70,17 @@ public class Graphe extends JPanel
                 int x = margeGauche + (niveau * espaceHorizontal);
                 int y = margeHaut + (positionDansNiveau * espaceVertical);
                 
-                Cercle cercle = new Cercle(x, y, 20, nomSommet);
+                Cercle cercle = new Cercle(x, y, 15, nomSommet);
                 this.sommets.add(cercle);
-                System.out.println("Cercle créé: " + nomSommet + " à (" + x + "," + y + ") niveau=" + niveau);
+                System.out.println("Cercle créé: " + nomSommet + " à (" + x + "," + y + ")");
             }
 
             System.out.println("Nombre de cercles créés: " + this.sommets.size());
 
             // Création des liens entre sommets
-            for(int cpt = 0; cpt < this.ctrl.getSommets().size(); cpt++)
+            for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
             {
-                Sommet sommetMetier = this.ctrl.getSommets().get(cpt);
+                Sommet sommetMetier = sommetsMetier.get(cpt);
                 
                 for(appli.metier.Lien lienMetier : sommetMetier.getLiens())
                 {
@@ -79,9 +89,9 @@ public class Graphe extends JPanel
                         continue;
                     
                     int indexCible = -1;
-                    for(int i = 0; i < this.ctrl.getSommets().size(); i++)
+                    for(int i = 0; i < sommetsMetier.size(); i++)
                     {
-                        if(this.ctrl.getSommets().get(i).getNom().equals(lienMetier.getNom()))
+                        if(sommetsMetier.get(i).getNom().equals(lienMetier.getNom()))
                         {
                             indexCible = i;
                             break;
@@ -96,26 +106,35 @@ public class Graphe extends JPanel
                             lienMetier.getDistance()
                         );
                         this.liens.add(lienDessin);
+                        System.out.println("Lien créé: " + sommetMetier.getNom() + " -> " + lienMetier.getNom());
                     }
                 }
             }
             
+            System.out.println("Nombre de liens créés: " + this.liens.size());
         }
+        else
+        {
+            System.out.println("AUCUN SOMMET DISPONIBLE !");
+        }
+        
+        // Forcer le redessin
+        this.repaint();
     }
 
     /**
      * Calcule le niveau de profondeur de chaque sommet avec un parcours BFS
      */
-    private HashMap<String, Integer> calculerNiveaux()
+    private HashMap<String, Integer> calculerNiveaux(ArrayList<Sommet> sommetsMetier)
     {
         HashMap<String, Integer> niveaux = new HashMap<>();
         HashSet<String> visites = new HashSet<>();
         
-        if(this.ctrl.getSommets().isEmpty())
+        if(sommetsMetier.isEmpty())
             return niveaux;
         
         // Partir du premier sommet comme racine
-        Sommet racine = this.ctrl.getSommets().get(0);
+        Sommet racine = sommetsMetier.get(0);
         Queue<String> file = new LinkedList<>();
         file.add(racine.getNom());
         niveaux.put(racine.getNom(), 0);
@@ -128,7 +147,7 @@ public class Graphe extends JPanel
             
             // Trouver le sommet correspondant
             Sommet sommetCourant = null;
-            for(Sommet s : this.ctrl.getSommets())
+            for(Sommet s : sommetsMetier)
             {
                 if(s.getNom().equals(nomCourant))
                 {
@@ -154,7 +173,7 @@ public class Graphe extends JPanel
         }
         
         // Sommets non visités (graphe non connexe)
-        for(Sommet s : this.ctrl.getSommets())
+        for(Sommet s : sommetsMetier)
         {
             if(!niveaux.containsKey(s.getNom()))
             {
@@ -169,28 +188,22 @@ public class Graphe extends JPanel
     {
         super.paintComponent(g);
         
-        System.out.println("paintComponent appelé ! Cercles: " + this.sommets.size() + ", Liens: " + this.liens.size());
+        System.out.println("paintComponent GrapheCopie appelé ! Cercles: " + this.sommets.size() + ", Liens: " + this.liens.size());
         
         Graphics2D g2d = (Graphics2D) g;
         g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
                             RenderingHints.VALUE_ANTIALIAS_ON);
         
+        // Dessiner les liens
         for(appli.ihm.dessin.Lien lien : this.liens)
         {
             lien.dessiner(g2d);
         }
         
+        // Dessiner les cercles
         for(Cercle cercle : this.sommets)
         {
             cercle.dessiner(g2d);
         }
-    }
-        
-    /**
-     * Méthode pour rafraîchir l'affichage après modification
-     */
-    public void actualiser()
-    {
-        repaint();
     }
 }
