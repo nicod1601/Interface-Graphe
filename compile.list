@@ -9,3 +9,4 @@
 ./appli/ihm/dessin/Cercle.java
 ./appli/ihm/dessin/Lien.java
 ./appli/ihm/Graphe.java
+./appli/ihm/GrapheCopie.java
