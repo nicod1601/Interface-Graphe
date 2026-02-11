@@ -1,6 +1,11 @@
 ./appli/metier/Lien.java
 ./appli/metier/Lecture.java
 ./appli/metier/Sommet.java
+./appli/metier/BellmanFordMetier.java
 ./appli/Controleur.java
 ./appli/ihm/Appli.java
 ./appli/ihm/Menu.java
+./appli/ihm/Edit.java
+./appli/ihm/dessin/Cercle.java
+./appli/ihm/dessin/Lien.java
+./appli/ihm/Graphe.java
