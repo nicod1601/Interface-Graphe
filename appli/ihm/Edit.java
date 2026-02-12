@@ -1,7 +1,8 @@
 package appli.ihm;
 
 import appli.Controleur;
-
+import appli.metier.Lien;
+import appli.metier.Sommet;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
@@ -9,8 +10,11 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.GridLayout;
 import java.awt.Insets;
-
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -18,13 +22,6 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
-import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
-import java.util.ArrayList;
-import appli.metier.Sommet;
-import appli.metier.Lien;
-import javax.swing.JButton;
-import javax.swing.SwingConstants;
 
 public class Edit extends JPanel implements ActionListener
 {
@@ -270,10 +267,19 @@ public class Edit extends JPanel implements ActionListener
         this.tableModel.setRowCount(0);
         for (Sommet sommet : sommets)
         {
-            for(Lien lien : sommet.getLiens())
+            if (sommet.getLiens().isEmpty())
             {
-                Object[] row = {sommet.getNom(), lien.getNom(), lien.getDistance()};
+                // Sommet terminal (ex: F) : afficher quand même une ligne vide
+                Object[] row = {sommet.getNom(), "", 0};
                 this.tableModel.addRow(row);
+            }
+            else
+            {
+                for(Lien lien : sommet.getLiens())
+                {
+                    Object[] row = {sommet.getNom(), lien.getNom(), lien.getDistance()};
+                    this.tableModel.addRow(row);
+                }
             }
         }
     }
@@ -359,6 +365,14 @@ public class Edit extends JPanel implements ActionListener
     public void sauvegarder()
     {
         this.appli.sauvegarder(this.sommets);
+
+        for(Sommet s : this.sommets)
+        {
+            System.out.println("Sommet : " + s.getNom() + s.getLiens());
+        }
+
+
+
         this.appli.afficher("Sauvegarder");
     }
 

@@ -117,6 +117,12 @@ public class Lecture
             this.sommetsObjet = new ArrayList<>();
         else
             this.sommetsObjet = nouvellesSommets;
+
+
+        for(Sommet s : this.sommetsObjet)
+        {
+            System.out.println("----Sommet : " + s.getNom() );
+        }
     }
 
     public String getDocument()
