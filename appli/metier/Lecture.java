@@ -107,6 +107,18 @@ public class Lecture
         return sommetsObjet;
     }
 
+    /**
+     * Remplace la liste interne des sommets par une nouvelle liste fournie.
+     * Utilisé pour mettre à jour les données après édition.
+     */
+    public void setSommets(ArrayList<Sommet> nouvellesSommets)
+    {
+        if (nouvellesSommets == null)
+            this.sommetsObjet = new ArrayList<>();
+        else
+            this.sommetsObjet = nouvellesSommets;
+    }
+
     public String getDocument()
     {
         System.out.println("Document : \n" + document);

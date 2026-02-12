@@ -21,6 +21,11 @@ public class Controleur
         return this.lecture.getSommets();
     }
 
+    public void setSommets(ArrayList<Sommet> liste)
+    {
+        this.lecture.setSommets(liste);
+    }
+
     public void setLiens(String lien)
     {
         this.lecture.setLien(lien);

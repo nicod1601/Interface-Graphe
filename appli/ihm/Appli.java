@@ -1,9 +1,13 @@
 package appli.ihm;
 
 import appli.Controleur;
+import appli.metier.Sommet;
+
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
+import java.util.ArrayList;
+
 import javax.swing.JFrame;
 
 public class Appli extends JFrame
@@ -96,9 +100,51 @@ public class Appli extends JFrame
                 this.add(this.graphe, BorderLayout.CENTER);
                 this.graphe.setVisible(true);
                 break;
+            case "Sauvegarder":
+                if(this.edit != null)
+                {
+                    this.edit.setVisible(false);
+                    this.remove(this.edit);
+                }
+                
+                if(this.graphe != null)
+                {
+                    this.remove(this.graphe);
+                }
+                
+                this.graphe = new Graphe(this.ctrl);
+                this.add(this.graphe, BorderLayout.CENTER);
+                this.graphe.setVisible(true);
+                break;
         }
         
         // Forcer le rafraîchissement de l'interface
+        this.revalidate();
+        this.repaint();
+    }
+
+    public void fichier()
+    {
+        this.graphe.fichier();
+        this.revalidate();
+        this.repaint();
+        
+    }
+
+    public void sauvegarder(ArrayList<Sommet> liste)
+    {
+        // Mettre à jour le modèle via le contrôleur
+        if(this.ctrl != null)
+        {
+            this.ctrl.setSommets(liste);
+        }
+
+        // Si un Graphe est présent, demander la mise à jour graphique
+        if(this.graphe != null)
+        {
+            this.graphe.sauvegarder(liste);
+        }
+
         this.revalidate();
         this.repaint();
     }

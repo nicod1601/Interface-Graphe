@@ -8,6 +8,8 @@ public class Sommet
 
     public Sommet(String nom, ArrayList<Lien> liens)
     {
+        if(nom == null){return;}
+
         this.nom = nom;
         this.liens = liens;
     }
@@ -43,5 +45,10 @@ public class Sommet
     public void setLiens(ArrayList<Lien> liens)
     {
         this.liens = liens;
+    }
+
+    public void ajouterLien(Lien l)
+    {
+        this.liens.add(l);
     }
 }
