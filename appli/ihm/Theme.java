@@ -1,162 +1,249 @@
 package appli.ihm;
 
+import java.awt.*;
 import javax.swing.*;
 import javax.swing.border.Border;
-import java.awt.*;
 
 public class Theme
 {
-    // ── Couleurs ────────────────────────────────────────────────────────────
-    public static final Color BACKGROUND  = new Color(245, 247, 250);
-    public static final Color PANEL       = Color.WHITE;
-    public static final Color ACCENT      = new Color(59, 130, 246);
-    public static final Color SUCCESS     = new Color(34, 197, 94);
-    public static final Color DANGER      = new Color(239, 68, 68);
-    public static final Color WARNING     = new Color(251, 146, 60);
-    public static final Color TEXT        = new Color(31, 41, 55);
-    public static final Color TEXT_MUTED  = new Color(107, 114, 128);
-    public static final Color BORDER      = new Color(229, 231, 235);
-    public static final Color HEADER_BG   = new Color(249, 250, 251);
-    public static final Color SELECT_BG   = new Color(219, 234, 254);
+	// ── Palette ─────────────────────────────────────────────────────────────
+	public static final Color BACKGROUND  = new Color(243, 243, 243);
+	public static final Color PANEL       = new Color(255, 255, 255);
+	public static final Color PANEL_ALT   = new Color(248, 248, 248);
+	public static final Color ACCENT      = new Color(  0, 120, 212);
+	public static final Color ACCENT_SOFT = new Color(  0, 120, 212,  25);
+	public static final Color SUCCESS     = new Color( 22, 163,  74);
+	public static final Color DANGER      = new Color(205,  53,  53);
+	public static final Color WARNING     = new Color(202, 130,   0);
+	public static final Color TEXT        = new Color( 30,  30,  30);
+	public static final Color TEXT_MUTED  = new Color(120, 120, 120);
+	public static final Color BORDER      = new Color(220, 220, 220);
+	public static final Color HEADER_BG   = new Color(248, 248, 248);
+	public static final Color SELECT_BG   = new Color(  0, 120, 212,  20);
+	public static final Color SELECT_FG   = new Color(  0,  80, 160);
 
-    // ── Polices ─────────────────────────────────────────────────────────────
-    public static final Font FONT_NORMAL  = new Font("Segoe UI Emoji", Font.PLAIN,  13);
-    public static final Font FONT_BOLD    = new Font("Segoe UI Emoji", Font.BOLD,   13);
-    public static final Font FONT_TITLE   = new Font("Segoe UI Emoji", Font.BOLD,   16);
-    public static final Font FONT_SMALL   = new Font("Segoe UI Emoji", Font.BOLD,   11);
+	// ── Polices ───────────────────────────────────────────────────────────────
+	public static final Font FONT_NORMAL = loadSans(Font.PLAIN,  13);
+	public static final Font FONT_BOLD   = loadSans(Font.BOLD,   13);
+	public static final Font FONT_TITLE  = loadSans(Font.BOLD,   14);
+	public static final Font FONT_SMALL  = loadSans(Font.BOLD,   11);
+	public static final Font FONT_MONO   = new Font(Font.MONOSPACED, Font.PLAIN, 12);
 
-    // ── Bordures ────────────────────────────────────────────────────────────
-    public static Border borderCard()
-    {
-        return BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(BORDER, 1),
-            BorderFactory.createEmptyBorder(15, 15, 15, 15)
-        );
-    }
+	private static Font loadSans(int style, int size)
+	{
+		for (String name : new String[]{"Segoe UI Emoji", "SF Pro Text", "Helvetica Neue", "Arial"})
+		{
+			Font f = new Font(name, style, size);
+			if (!f.getFamily().equals(Font.DIALOG)) return f;
+		}
+		return new Font(Font.SANS_SERIF, style, size);
+	}
 
-    public static Border borderInput()
-    {
-        return BorderFactory.createLineBorder(BORDER, 1);
-    }
+	// ── Bordures ──────────────────────────────────────────────────────────────
+	public static Border borderCard()
+	{
+		return BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(BORDER, 1),
+			BorderFactory.createEmptyBorder(14, 14, 14, 14)
+		);
+	}
 
-    // ── Fabriques ────────────────────────────────────────────────────────────
+	public static Border borderInput()
+	{
+		return BorderFactory.createLineBorder(BORDER, 1);
+	}
 
-    public static JLabel label(String text)
-    {
-        JLabel l = new JLabel(text);
-        l.setFont(FONT_NORMAL);
-        l.setForeground(TEXT);
-        return l;
-    }
+	// ── Composants ────────────────────────────────────────────────────────────
 
-    public static JLabel labelTitle(String text)
-    {
-        JLabel l = new JLabel(text);
-        l.setFont(FONT_TITLE);
-        l.setForeground(TEXT);
-        return l;
-    }
+	public static JLabel label(String text)
+	{
+		JLabel l = new JLabel(text);
+		l.setFont(FONT_NORMAL);
+		l.setForeground(TEXT);
+		return l;
+	}
 
-    public static JButton button(String text, Color bg)
-    {
-        JButton btn = new JButton(text);
-        btn.setFont(FONT_BOLD);
-        btn.setBackground(bg);
-        btn.setForeground(Color.WHITE);
-        btn.setFocusPainted(false);
-        btn.setBorderPainted(false);
-        btn.setOpaque(true);
-        btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
-        btn.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(bg.darker(), 1),
-            BorderFactory.createEmptyBorder(6, 12, 6, 12)
-        ));
-        btn.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(bg.brighter()); }
-            public void mouseExited (java.awt.event.MouseEvent e) { btn.setBackground(bg); }
-        });
-        return btn;
-    }
+	public static JLabel labelTitle(String text)
+	{
+		JLabel l = new JLabel(text);
+		l.setFont(FONT_TITLE);
+		l.setForeground(TEXT);
+		return l;
+	}
 
-    public static JPanel panel()
-    {
-        JPanel p = new JPanel();
-        p.setBackground(PANEL);
-        return p;
-    }
+	public static JButton button(String text, Color bg)
+	{
+		JButton btn = new JButton(text);
+		btn.setFont(FONT_BOLD);
+		btn.setBackground(bg);
+		btn.setForeground(Color.WHITE);
+		btn.setFocusPainted(false);
+		btn.setOpaque(true);
+		btn.setBorderPainted(false);
+		btn.setCursor(Cursor.getPredefinedCursor(Cursor.HAND_CURSOR));
+		btn.setBorder(BorderFactory.createEmptyBorder(6, 14, 6, 14));
+		btn.addMouseListener(new java.awt.event.MouseAdapter()
+		{
+			final Color hover = bg.darker();
+			public void mouseEntered(java.awt.event.MouseEvent e) { btn.setBackground(hover); }
+			public void mouseExited (java.awt.event.MouseEvent e) { btn.setBackground(bg);    }
+		});
+		return btn;
+	}
 
-    public static JPanel panelBackground()
-    {
-        JPanel p = new JPanel();
-        p.setBackground(BACKGROUND);
-        return p;
-    }
+	public static JPanel panel()
+	{
+		JPanel p = new JPanel();
+		p.setBackground(PANEL);
+		return p;
+	}
 
-    public static void styleTable(JTable table)
-    {
-        table.setFont(FONT_NORMAL);
-        table.setRowHeight(32);
-        table.setShowGrid(true);
-        table.setGridColor(BORDER);
-        table.setSelectionBackground(SELECT_BG);
-        table.setSelectionForeground(TEXT);
-        table.setIntercellSpacing(new Dimension(10, 5));
-        table.setBackground(PANEL);
+	public static JPanel panelBackground()
+	{
+		JPanel p = new JPanel();
+		p.setBackground(BACKGROUND);
+		return p;
+	}
 
-        var header = table.getTableHeader();
-        header.setFont(FONT_BOLD);
-        header.setBackground(HEADER_BG);
-        header.setForeground(TEXT);
-        header.setBorder(BorderFactory.createMatteBorder(0, 0, 2, 0, BORDER));
-        header.setPreferredSize(new Dimension(header.getPreferredSize().width, 40));
-    }
+	public static void styleTable(JTable table)
+	{
+		table.setFont(FONT_NORMAL);
+		table.setRowHeight(30);
+		table.setShowGrid(false);
+		table.setShowHorizontalLines(true);
+		table.setGridColor(new Color(235, 235, 235));
+		table.setSelectionBackground(SELECT_BG);
+		table.setSelectionForeground(SELECT_FG);
+		table.setIntercellSpacing(new Dimension(10, 0));
+		table.setBackground(PANEL);
+		table.setForeground(TEXT);
 
-    public static JMenu menu(String text)
-    {
-        JMenu m = new JMenu(text);
-        m.setFont(FONT_BOLD);
-        m.setForeground(TEXT);
-        m.setBorder(BorderFactory.createEmptyBorder(5, 10, 5, 10));
-        m.setOpaque(false);
-        m.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) { m.setOpaque(true);  m.setBackground(HEADER_BG); }
-            public void mouseExited (java.awt.event.MouseEvent e) { m.setOpaque(false); }
-        });
-        return m;
-    }
+		var header = table.getTableHeader();
+		header.setFont(FONT_BOLD);
+		header.setBackground(HEADER_BG);
+		header.setForeground(TEXT_MUTED);
+		header.setBorder(BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER));
+		header.setPreferredSize(new Dimension(header.getPreferredSize().width, 36));
+		header.setReorderingAllowed(false);
+	}
 
-    public static JMenuItem menuItem(String text, Color accent)
-    {
-        JMenuItem item = new JMenuItem(text);
-        item.setFont(FONT_NORMAL);
-        item.setForeground(TEXT);
-        item.setBackground(PANEL);
-        item.setBorder(BorderFactory.createEmptyBorder(8, 15, 8, 15));
-        item.setOpaque(true);
-        item.addMouseListener(new java.awt.event.MouseAdapter() {
-            public void mouseEntered(java.awt.event.MouseEvent e) { item.setBackground(new Color(accent.getRed(), accent.getGreen(), accent.getBlue(), 20)); item.setForeground(accent); }
-            public void mouseExited (java.awt.event.MouseEvent e) { item.setBackground(PANEL); item.setForeground(TEXT); }
-        });
-        return item;
-    }
+	/** Aucun MouseListener — le highlight est géré par le L&F. */
+	public static JMenu menu(String text)
+	{
+		JMenu m = new JMenu(text);
+		m.setFont(FONT_NORMAL);
+		m.setBorder(BorderFactory.createEmptyBorder(4, 10, 4, 10));
+		return m;
+	}
 
-    public static JButton modeBadge(String text, Color bg)
-    {
-        JButton badge = new JButton(text);
-        badge.setFont(FONT_SMALL);
-        badge.setBackground(bg);
-        badge.setForeground(Color.WHITE);
-        badge.setFocusPainted(false);
-        badge.setBorderPainted(false);
-        badge.setContentAreaFilled(true);
-        badge.setOpaque(true);
-        badge.setEnabled(false);
-        badge.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
-        badge.setBorder(BorderFactory.createCompoundBorder(
-            BorderFactory.createLineBorder(bg.darker(), 1, true),
-            BorderFactory.createEmptyBorder(4, 12, 4, 12)
-        ));
-        badge.setPreferredSize(new Dimension(120, 28));
-        return badge;
-    }
+	/** Aucun MouseListener — le highlight est géré par le L&F. */
+	public static JMenuItem menuItem(String text, Color accent)
+	{
+		JMenuItem item = new JMenuItem(text);
+		item.setFont(FONT_NORMAL);
+		item.setBorder(BorderFactory.createEmptyBorder(7, 16, 7, 16));
+		return item;
+	}
+
+	public static JButton modeBadge(String text, Color color)
+	{
+		JButton badge = new JButton(text);
+		badge.setFont(FONT_SMALL);
+		badge.setBackground(new Color(color.getRed(), color.getGreen(), color.getBlue(), 18));
+		badge.setForeground(color);
+		badge.setFocusPainted(false);
+		badge.setContentAreaFilled(true);
+		badge.setOpaque(true);
+		badge.setEnabled(false);
+		badge.setCursor(Cursor.getPredefinedCursor(Cursor.DEFAULT_CURSOR));
+		badge.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(
+				new Color(color.getRed(), color.getGreen(), color.getBlue(), 80), 1, true),
+			BorderFactory.createEmptyBorder(3, 12, 3, 12)
+		));
+		badge.setPreferredSize(new Dimension(130, 26));
+		return badge;
+	}
+
+	/**
+	 * À appeler EN TOUT PREMIER dans main() ou dans le constructeur Appli,
+	 * avant même new Appli().
+	 *
+	 * On force Metal (L&F Java pur) pour avoir un rendu de menus stable sur
+	 * Windows — le L&F système Windows intercepte le dessin des menus et
+	 * ignore une grande partie des clés UIManager, ce qui causait le bug
+	 * d'écriture superposée.
+	 */
+	public static void applyGlobalLookAndFeel()
+	{
+		try
+		{
+			// Metal = L&F Java pur, rendu 100% contrôlé, pas d'interférence Windows
+			UIManager.setLookAndFeel("javax.swing.plaf.metal.MetalLookAndFeel");
+		}
+		catch (Exception e)
+		{
+			// Si Metal n'est pas dispo (très rare), on reste sur le L&F par défaut
+			System.err.println("Metal L&F non disponible : " + e.getMessage());
+		}
+
+		// ── Menus ─────────────────────────────────────────────────────────────
+		UIManager.put("Menu.background",              PANEL);
+		UIManager.put("Menu.foreground",              TEXT);
+		UIManager.put("Menu.font",                    FONT_NORMAL);
+		UIManager.put("Menu.selectionBackground",     new Color(0, 120, 212, 40));
+		UIManager.put("Menu.selectionForeground",     ACCENT);
+		UIManager.put("Menu.border",                  BorderFactory.createEmptyBorder(4, 10, 4, 10));
+		UIManager.put("Menu.borderPainted",           false);
+
+		UIManager.put("PopupMenu.background",         PANEL);
+		UIManager.put("PopupMenu.border",             BorderFactory.createLineBorder(BORDER, 1));
+
+		UIManager.put("MenuItem.background",          PANEL);
+		UIManager.put("MenuItem.foreground",          TEXT);
+		UIManager.put("MenuItem.font",                FONT_NORMAL);
+		UIManager.put("MenuItem.selectionBackground", new Color(0, 120, 212, 40));
+		UIManager.put("MenuItem.selectionForeground", ACCENT);
+		UIManager.put("MenuItem.border",              BorderFactory.createEmptyBorder(7, 16, 7, 16));
+		UIManager.put("MenuItem.borderPainted",       false);
+
+		UIManager.put("MenuBar.background",           PANEL);
+		UIManager.put("MenuBar.border",               BorderFactory.createMatteBorder(0, 0, 1, 0, BORDER));
+
+		UIManager.put("Separator.foreground",         BORDER);
+		UIManager.put("Separator.background",         PANEL);
+
+		// ── Scrollbars ────────────────────────────────────────────────────────
+		UIManager.put("ScrollBar.width",              8);
+		UIManager.put("ScrollBar.background",         BACKGROUND);
+		UIManager.put("ScrollBar.thumb",              new Color(200, 200, 200));
+		UIManager.put("ScrollBar.thumbDarkShadow",    BACKGROUND);
+		UIManager.put("ScrollBar.thumbShadow",        BACKGROUND);
+		UIManager.put("ScrollBar.thumbHighlight",     new Color(170, 170, 170));
+		UIManager.put("ScrollBar.track",              BACKGROUND);
+
+		// ── Éditeur ───────────────────────────────────────────────────────────
+		UIManager.put("EditorPane.background",        PANEL_ALT);
+		UIManager.put("EditorPane.foreground",        TEXT);
+		UIManager.put("EditorPane.caretForeground",   ACCENT);
+		UIManager.put("EditorPane.font",              FONT_MONO);
+
+		// ── Table ─────────────────────────────────────────────────────────────
+		UIManager.put("Table.background",             PANEL);
+		UIManager.put("Table.foreground",             TEXT);
+		UIManager.put("Table.selectionBackground",    SELECT_BG);
+		UIManager.put("Table.selectionForeground",    SELECT_FG);
+		UIManager.put("TableHeader.background",       HEADER_BG);
+		UIManager.put("TableHeader.foreground",       TEXT_MUTED);
+
+		// ── Fond général ──────────────────────────────────────────────────────
+		UIManager.put("Panel.background",             BACKGROUND);
+		UIManager.put("Viewport.background",          PANEL);
+		UIManager.put("ScrollPane.background",        BACKGROUND);
+
+		// ── Tooltip ───────────────────────────────────────────────────────────
+		UIManager.put("ToolTip.background",           new Color(255, 255, 220));
+		UIManager.put("ToolTip.foreground",           TEXT);
+		UIManager.put("ToolTip.border",               BorderFactory.createLineBorder(BORDER, 1));
+	}
 }

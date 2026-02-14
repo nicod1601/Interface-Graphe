@@ -2,150 +2,95 @@ package appli.ihm;
 
 import appli.Controleur;
 import appli.metier.Sommet;
-
 import java.awt.BorderLayout;
 import java.awt.Image;
 import java.awt.Toolkit;
 import java.util.ArrayList;
-
 import javax.swing.JFrame;
 
 public class Appli extends JFrame
 {
-    private Menu menu;
-    private Controleur ctrl;
-    private Edit edit;
-    private Graphe graphe;
+	private Menu       menu;
+	private Controleur ctrl;
+	private Edit       edit;
+	private Graphe     graphe;
 
-    public Appli(Controleur ctrl)
-    {
-        this.ctrl = ctrl;
-        this.setTitle("Interface Graphe");
-        Image icon = Toolkit.getDefaultToolkit().getImage("./appli/logo.png");
-        this.setIconImage(icon);
-        this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        this.setLocationRelativeTo(null);
-        this.setExtendedState(JFrame.MAXIMIZED_BOTH);
-        
-        /* Création des composants */
-        this.menu = new Menu(this.ctrl, this);
-        this.edit = null;
-        this.graphe = null;
+	public Appli(Controleur ctrl)
+	{
+		this.ctrl = ctrl;
+		this.setTitle("Interface Graphe");
+		Image icon = Toolkit.getDefaultToolkit().getImage("./appli/logo.png");
+		this.setIconImage(icon);
+		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setLocationRelativeTo(null);
+		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
+		this.getContentPane().setBackground(Theme.BACKGROUND);
 
-        /* Positionnement des composants */
-        this.add(this.menu, BorderLayout.NORTH);
-        
-        this.setVisible(true);
-    }
+		this.menu   = new Menu(this.ctrl, this);
+		this.edit   = null;
+		this.graphe = null;
 
-    public void afficher(String nom)
-    {
-        switch(nom)
-        {
-            case "Graphe":
-                // Cacher et retirer l'éditeur s'il existe
-                if(this.edit != null)
-                {
-                    this.edit.setVisible(false);
-                    this.remove(this.edit);
-                }
-                
-                // Retirer l'ancien graphe s'il existe
-                if(this.graphe != null)
-                {
-                    this.remove(this.graphe);
-                }
-                
-                // Créer un nouveau graphe avec les données actuelles
-                this.graphe = new Graphe(this.ctrl);
-                this.add(this.graphe, BorderLayout.CENTER);
-                this.graphe.setVisible(true);
-                break;
-                
-            case "Edit":
-                // Cacher et retirer le graphe s'il existe
-                if(this.graphe != null)
-                {
-                    this.graphe.setVisible(false);
-                    this.remove(this.graphe);
-                }
-                
-                // Retirer l'ancien éditeur s'il existe
-                if(this.edit != null)
-                {
-                    this.remove(this.edit);
-                }
-                
-                // Créer un nouvel éditeur avec les données actuelles
-                this.edit = new Edit(this.ctrl, this);
-                this.add(this.edit, BorderLayout.CENTER);
-                this.edit.setVisible(true);
-                this.edit.setDocument(this.ctrl.getDocument());
-                break;
-                
-            case "Annuler":
-                // Même comportement que "Graphe" : fermer edit et afficher graphe
-                if(this.edit != null)
-                {
-                    this.edit.setVisible(false);
-                    this.remove(this.edit);
-                }
-                
-                if(this.graphe != null)
-                {
-                    this.remove(this.graphe);
-                }
-                
-                this.graphe = new Graphe(this.ctrl);
-                this.add(this.graphe, BorderLayout.CENTER);
-                this.graphe.setVisible(true);
-                break;
-            case "Sauvegarder":
-                if(this.edit != null)
-                {
-                    this.edit.setVisible(false);
-                    this.remove(this.edit);
-                }
-                
-                if(this.graphe != null)
-                {
-                    this.remove(this.graphe);
-                }
-                
-                this.graphe = new Graphe(this.ctrl);
-                this.add(this.graphe, BorderLayout.CENTER);
-                this.graphe.setVisible(true);
-                break;
-        }
-        
-        // Forcer le rafraîchissement de l'interface
-        this.revalidate();
-        this.repaint();
-    }
+		this.add(this.menu, BorderLayout.NORTH);
+		this.setVisible(true);
+	}
 
-    public void fichier()
-    {
-        this.graphe.fichier();
-        this.revalidate();
-        this.repaint();
-        
-    }
+	/**
+	 * Point d'entrée recommandé pour lancer l'application.
+	 * Le thème DOIT être appliqué avant la création de tout composant Swing.
+	 * Utilise ce patron dans ton Controleur ou ta classe main :
+	 *
+	 *   SwingUtilities.invokeLater(() -> {
+	 *       Theme.applyGlobalLookAndFeel();
+	 *       new Appli(ctrl);
+	 *   });
+	 */
+	public void afficher(String nom)
+	{
+		switch (nom)
+		{
+			case "Graphe":
+				if (this.edit   != null) { this.edit.setVisible(false);   this.remove(this.edit);   }
+				if (this.graphe != null) { this.remove(this.graphe); }
+				this.graphe = new Graphe(this.ctrl);
+				this.add(this.graphe, BorderLayout.CENTER);
+				this.graphe.setVisible(true);
+				break;
 
-    public void sauvegarder(ArrayList<Sommet> liste)
-    {
-        // Mettre à jour le modèle via le contrôleur
-        if(this.ctrl != null)
-        {
-            this.ctrl.setSommets(liste);
-        }
+			case "Edit":
+				if (this.graphe != null) { this.graphe.setVisible(false); this.remove(this.graphe); }
+				if (this.edit   != null) { this.remove(this.edit); }
+				this.edit = new Edit(this.ctrl, this);
+				this.add(this.edit, BorderLayout.CENTER);
+				this.edit.setVisible(true);
+				this.edit.setDocument(this.ctrl.getDocument());
+				break;
 
-        // Si un Graphe est présent, demander la mise à jour graphique
-        if(this.graphe != null)
-        {
-            this.graphe.sauvegarder(liste);
-        }
+			case "Annuler":
+			case "Sauvegarder":
+				if (this.edit   != null) { this.edit.setVisible(false);   this.remove(this.edit);   }
+				if (this.graphe != null) { this.remove(this.graphe); }
+				this.graphe = new Graphe(this.ctrl);
+				this.add(this.graphe, BorderLayout.CENTER);
+				this.graphe.setVisible(true);
+				break;
+		}
 
-        this.revalidate();
-        this.repaint();
-    }
+		this.revalidate();
+		this.repaint();
+	}
+
+	public void fichier()
+	{
+		this.graphe.fichier();
+		this.revalidate();
+		this.repaint();
+	}
+
+	public void sauvegarder(ArrayList<Sommet> liste)
+	{
+		if (this.ctrl   != null) this.ctrl.setSommets(liste);
+		if (this.graphe != null) this.graphe.sauvegarder(liste);
+		this.revalidate();
+		this.repaint();
+	}
 }

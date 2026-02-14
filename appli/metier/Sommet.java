@@ -3,52 +3,52 @@ import java.util.ArrayList;
 
 public class Sommet
 {
-    private String nom;
-    private ArrayList<Lien> liens;
+	private String nom;
+	private ArrayList<Lien> liens;
 
-    public Sommet(String nom, ArrayList<Lien> liens)
-    {
-        if(nom == null){return;}
+	public Sommet(String nom, ArrayList<Lien> liens)
+	{
+		if(nom == null){return;}
 
-        this.nom = nom;
-        this.liens = liens;
-    }
+		this.nom = nom;
+		this.liens = liens;
+	}
 
-    public Sommet(String nom)
-    {
-        this.nom = nom;
-        this.liens = new ArrayList<Lien>();
-    }
+	public Sommet(String nom)
+	{
+		this.nom = nom;
+		this.liens = new ArrayList<Lien>();
+	}
 
-    /*
-        GETTERS 
-    */
+	/*
+		GETTERS 
+	*/
 
-    public String getNom()
-    {
-        return nom;
-    }
+	public String getNom()
+	{
+		return nom;
+	}
 
-    public ArrayList<Lien> getLiens()
-    {
-        return liens;
-    }
+	public ArrayList<Lien> getLiens()
+	{
+		return liens;
+	}
 
-    /*
-        SETTERS
-    */
-    public void setNom(String nom)
-    {
-        this.nom = nom;
-    }
+	/*
+		SETTERS
+	*/
+	public void setNom(String nom)
+	{
+		this.nom = nom;
+	}
 
-    public void setLiens(ArrayList<Lien> liens)
-    {
-        this.liens = liens;
-    }
+	public void setLiens(ArrayList<Lien> liens)
+	{
+		this.liens = liens;
+	}
 
-    public void ajouterLien(Lien l)
-    {
-        this.liens.add(l);
-    }
+	public void ajouterLien(Lien l)
+	{
+		this.liens.add(l);
+	}
 }

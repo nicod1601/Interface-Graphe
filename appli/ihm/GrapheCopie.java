@@ -15,195 +15,195 @@ import javax.swing.JPanel;
 
 public class GrapheCopie extends JPanel
 {
-    private Edit edit;
-    private ArrayList<Cercle> sommets;
-    private ArrayList<appli.ihm.dessin.Lien> liens;
+	private Edit edit;
+	private ArrayList<Cercle> sommets;
+	private ArrayList<appli.ihm.dessin.Lien> liens;
 
-    public GrapheCopie(Edit edit)
-    {
-        this.edit = edit;
-        this.sommets = new ArrayList<>();
-        this.liens = new ArrayList<>();
-        
-        // Définir une taille préférée et une couleur de fond
-        this.setPreferredSize(new java.awt.Dimension(600, 300));
-        this.setBackground(Color.WHITE);
-    }
+	public GrapheCopie(Edit edit)
+	{
+		this.edit = edit;
+		this.sommets = new ArrayList<>();
+		this.liens = new ArrayList<>();
+		
+		// Définir une taille préférée et une couleur de fond
+		this.setPreferredSize(new java.awt.Dimension(600, 300));
+		this.setBackground(Color.WHITE);
+	}
 
-    public void actualiser()
-    {
-        System.out.println("=== ACTUALISATION GRAPHE COPIE ===");
-        
-        // Vider les listes
-        this.sommets.clear();
-        this.liens.clear();
-        
-        ArrayList<Sommet> sommetsMetier = this.edit.getSommets();
-        
-        if(sommetsMetier != null && !sommetsMetier.isEmpty())
-        {
-            System.out.println("Nombre de sommets métier: " + sommetsMetier.size());
-            
-            // Calculer les niveaux de profondeur pour chaque sommet (BFS)
-            HashMap<String, Integer> niveaux = calculerNiveaux(sommetsMetier);
-            HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
-            
-            int espaceHorizontal = 100;  // Espace entre colonnes
-            int espaceVertical = 60;     // Espace entre lignes
-            int margeGauche = 50;
-            int margeHaut = 50;
-            
-            // Création des cercles pour chaque sommet
-            for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
-            {
-                Sommet sommetMetier = sommetsMetier.get(cpt);
-                String nomSommet = sommetMetier.getNom();
-                
-                // Récupérer le niveau de profondeur
-                int niveau = niveaux.getOrDefault(nomSommet, 0);
-                
-                // Compter combien de sommets au même niveau
-                int positionDansNiveau = compteurParNiveau.getOrDefault(niveau, 0);
-                compteurParNiveau.put(niveau, positionDansNiveau + 1);
-                
-                // Calculer les coordonnées
-                int x = margeGauche + (niveau * espaceHorizontal);
-                int y = margeHaut + (positionDansNiveau * espaceVertical);
-                
-                Cercle cercle = new Cercle(x, y, 15, nomSommet);
-                this.sommets.add(cercle);
-                System.out.println("Cercle créé: " + nomSommet + " à (" + x + "," + y + ")");
-            }
+	public void actualiser()
+	{
+		System.out.println("=== ACTUALISATION GRAPHE COPIE ===");
+		
+		// Vider les listes
+		this.sommets.clear();
+		this.liens.clear();
+		
+		ArrayList<Sommet> sommetsMetier = this.edit.getSommets();
+		
+		if(sommetsMetier != null && !sommetsMetier.isEmpty())
+		{
+			System.out.println("Nombre de sommets métier: " + sommetsMetier.size());
+			
+			// Calculer les niveaux de profondeur pour chaque sommet (BFS)
+			HashMap<String, Integer> niveaux = calculerNiveaux(sommetsMetier);
+			HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
+			
+			int espaceHorizontal = 100;  // Espace entre colonnes
+			int espaceVertical = 60;     // Espace entre lignes
+			int margeGauche = 50;
+			int margeHaut = 50;
+			
+			// Création des cercles pour chaque sommet
+			for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
+			{
+				Sommet sommetMetier = sommetsMetier.get(cpt);
+				String nomSommet = sommetMetier.getNom();
+				
+				// Récupérer le niveau de profondeur
+				int niveau = niveaux.getOrDefault(nomSommet, 0);
+				
+				// Compter combien de sommets au même niveau
+				int positionDansNiveau = compteurParNiveau.getOrDefault(niveau, 0);
+				compteurParNiveau.put(niveau, positionDansNiveau + 1);
+				
+				// Calculer les coordonnées
+				int x = margeGauche + (niveau * espaceHorizontal);
+				int y = margeHaut + (positionDansNiveau * espaceVertical);
+				
+				Cercle cercle = new Cercle(x, y, 15, nomSommet);
+				this.sommets.add(cercle);
+				System.out.println("Cercle créé: " + nomSommet + " à (" + x + "," + y + ")");
+			}
 
-            System.out.println("Nombre de cercles créés: " + this.sommets.size());
+			System.out.println("Nombre de cercles créés: " + this.sommets.size());
 
-            // Création des liens entre sommets
-            for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
-            {
-                Sommet sommetMetier = sommetsMetier.get(cpt);
-                
-                for(appli.metier.Lien lienMetier : sommetMetier.getLiens())
-                {
-                    // Ignorer les liens vides
-                    if(lienMetier.getNom() == null || lienMetier.getNom().trim().isEmpty())
-                        continue;
-                    
-                    int indexCible = -1;
-                    for(int i = 0; i < sommetsMetier.size(); i++)
-                    {
-                        if(sommetsMetier.get(i).getNom().equals(lienMetier.getNom()))
-                        {
-                            indexCible = i;
-                            break;
-                        }
-                    }
-                    
-                    if(indexCible != -1)
-                    {
-                        appli.ihm.dessin.Lien lienDessin = new appli.ihm.dessin.Lien(
-                            this.sommets.get(cpt), 
-                            this.sommets.get(indexCible),
-                            lienMetier.getDistance()
-                        );
-                        this.liens.add(lienDessin);
-                        System.out.println("Lien créé: " + sommetMetier.getNom() + " -> " + lienMetier.getNom());
-                    }
-                }
-            }
-            
-            System.out.println("Nombre de liens créés: " + this.liens.size());
-        }
-        else
-        {
-            System.out.println("AUCUN SOMMET DISPONIBLE !");
-        }
-        
-        // Forcer le redessin
-        this.repaint();
-    }
+			// Création des liens entre sommets
+			for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
+			{
+				Sommet sommetMetier = sommetsMetier.get(cpt);
+				
+				for(appli.metier.Lien lienMetier : sommetMetier.getLiens())
+				{
+					// Ignorer les liens vides
+					if(lienMetier.getNom() == null || lienMetier.getNom().trim().isEmpty())
+						continue;
+					
+					int indexCible = -1;
+					for(int i = 0; i < sommetsMetier.size(); i++)
+					{
+						if(sommetsMetier.get(i).getNom().equals(lienMetier.getNom()))
+						{
+							indexCible = i;
+							break;
+						}
+					}
+					
+					if(indexCible != -1)
+					{
+						appli.ihm.dessin.Lien lienDessin = new appli.ihm.dessin.Lien(
+							this.sommets.get(cpt), 
+							this.sommets.get(indexCible),
+							lienMetier.getDistance()
+						);
+						this.liens.add(lienDessin);
+						System.out.println("Lien créé: " + sommetMetier.getNom() + " -> " + lienMetier.getNom());
+					}
+				}
+			}
+			
+			System.out.println("Nombre de liens créés: " + this.liens.size());
+		}
+		else
+		{
+			System.out.println("AUCUN SOMMET DISPONIBLE !");
+		}
+		
+		// Forcer le redessin
+		this.repaint();
+	}
 
-    /**
-     * Calcule le niveau de profondeur de chaque sommet avec un parcours BFS
-     */
-    private HashMap<String, Integer> calculerNiveaux(ArrayList<Sommet> sommetsMetier)
-    {
-        HashMap<String, Integer> niveaux = new HashMap<>();
-        HashSet<String> visites = new HashSet<>();
-        
-        if(sommetsMetier.isEmpty())
-            return niveaux;
-        
-        // Partir du premier sommet comme racine
-        Sommet racine = sommetsMetier.get(0);
-        Queue<String> file = new LinkedList<>();
-        file.add(racine.getNom());
-        niveaux.put(racine.getNom(), 0);
-        visites.add(racine.getNom());
-        
-        while(!file.isEmpty())
-        {
-            String nomCourant = file.poll();
-            int niveauCourant = niveaux.get(nomCourant);
-            
-            // Trouver le sommet correspondant
-            Sommet sommetCourant = null;
-            for(Sommet s : sommetsMetier)
-            {
-                if(s.getNom().equals(nomCourant))
-                {
-                    sommetCourant = s;
-                    break;
-                }
-            }
-            
-            if(sommetCourant != null)
-            {
-                // Parcourir les voisins
-                for(appli.metier.Lien lien : sommetCourant.getLiens())
-                {
-                    String nomVoisin = lien.getNom();
-                    if(nomVoisin != null && !nomVoisin.trim().isEmpty() && !visites.contains(nomVoisin))
-                    {
-                        niveaux.put(nomVoisin, niveauCourant + 1);
-                        visites.add(nomVoisin);
-                        file.add(nomVoisin);
-                    }
-                }
-            }
-        }
-        
-        // Sommets non visités (graphe non connexe)
-        for(Sommet s : sommetsMetier)
-        {
-            if(!niveaux.containsKey(s.getNom()))
-            {
-                niveaux.put(s.getNom(), 0);
-            }
-        }
-        
-        return niveaux;
-    }
+	/**
+	 * Calcule le niveau de profondeur de chaque sommet avec un parcours BFS
+	 */
+	private HashMap<String, Integer> calculerNiveaux(ArrayList<Sommet> sommetsMetier)
+	{
+		HashMap<String, Integer> niveaux = new HashMap<>();
+		HashSet<String> visites = new HashSet<>();
+		
+		if(sommetsMetier.isEmpty())
+			return niveaux;
+		
+		// Partir du premier sommet comme racine
+		Sommet racine = sommetsMetier.get(0);
+		Queue<String> file = new LinkedList<>();
+		file.add(racine.getNom());
+		niveaux.put(racine.getNom(), 0);
+		visites.add(racine.getNom());
+		
+		while(!file.isEmpty())
+		{
+			String nomCourant = file.poll();
+			int niveauCourant = niveaux.get(nomCourant);
+			
+			// Trouver le sommet correspondant
+			Sommet sommetCourant = null;
+			for(Sommet s : sommetsMetier)
+			{
+				if(s.getNom().equals(nomCourant))
+				{
+					sommetCourant = s;
+					break;
+				}
+			}
+			
+			if(sommetCourant != null)
+			{
+				// Parcourir les voisins
+				for(appli.metier.Lien lien : sommetCourant.getLiens())
+				{
+					String nomVoisin = lien.getNom();
+					if(nomVoisin != null && !nomVoisin.trim().isEmpty() && !visites.contains(nomVoisin))
+					{
+						niveaux.put(nomVoisin, niveauCourant + 1);
+						visites.add(nomVoisin);
+						file.add(nomVoisin);
+					}
+				}
+			}
+		}
+		
+		// Sommets non visités (graphe non connexe)
+		for(Sommet s : sommetsMetier)
+		{
+			if(!niveaux.containsKey(s.getNom()))
+			{
+				niveaux.put(s.getNom(), 0);
+			}
+		}
+		
+		return niveaux;
+	}
 
-    protected void paintComponent(Graphics g)
-    {
-        super.paintComponent(g);
-        
-        System.out.println("paintComponent GrapheCopie appelé ! Cercles: " + this.sommets.size() + ", Liens: " + this.liens.size());
-        
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
-                            RenderingHints.VALUE_ANTIALIAS_ON);
-        
-        // Dessiner les liens
-        for(appli.ihm.dessin.Lien lien : this.liens)
-        {
-            lien.dessiner(g2d);
-        }
-        
-        // Dessiner les cercles
-        for(Cercle cercle : this.sommets)
-        {
-            cercle.dessiner(g2d);
-        }
-    }
+	protected void paintComponent(Graphics g)
+	{
+		super.paintComponent(g);
+		
+		System.out.println("paintComponent GrapheCopie appelé ! Cercles: " + this.sommets.size() + ", Liens: " + this.liens.size());
+		
+		Graphics2D g2d = (Graphics2D) g;
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
+							RenderingHints.VALUE_ANTIALIAS_ON);
+		
+		// Dessiner les liens
+		for(appli.ihm.dessin.Lien lien : this.liens)
+		{
+			lien.dessiner(g2d);
+		}
+		
+		// Dessiner les cercles
+		for(Cercle cercle : this.sommets)
+		{
+			cercle.dessiner(g2d);
+		}
+	}
 }
