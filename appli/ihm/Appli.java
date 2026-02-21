@@ -34,16 +34,6 @@ public class Appli extends JFrame
 		this.setVisible(true);
 	}
 
-	/**
-	 * Point d'entrée recommandé pour lancer l'application.
-	 * Le thème DOIT être appliqué avant la création de tout composant Swing.
-	 * Utilise ce patron dans ton Controleur ou ta classe main :
-	 *
-	 *   SwingUtilities.invokeLater(() -> {
-	 *       Theme.applyGlobalLookAndFeel();
-	 *       new Appli(ctrl);
-	 *   });
-	 */
 	public void afficher(String nom)
 	{
 		switch (nom)

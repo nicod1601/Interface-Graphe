@@ -53,8 +53,8 @@ public class Graphe extends JPanel
 		HashMap<String, Integer> niveaux = calculerNiveaux();
 		HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
 
-		int espaceHorizontal = 150;  // Espace entre colonnes
-		int espaceVertical = 100;    // Espace entre lignes
+		int espaceHorizontal = 150;
+		int espaceVertical = 100;
 		int margeGauche = 100;
 		int margeHaut = 100;
 
