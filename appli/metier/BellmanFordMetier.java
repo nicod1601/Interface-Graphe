@@ -39,35 +39,9 @@ public class BellmanFordMetier {
 				String vName = lien.getNom();
 				int weight = lien.getDistance();
 				if (d.get(vName) > du + weight) {
-					System.out.println("Cycle négatif détecté !");
 					return;
 				}
 			}
 		}
-
-		// Affichage des distances
-		System.out.println("Distances depuis " + sourceName + " :");
-		for (Sommet s : graph) {
-			System.out.println(s.getNom() + " -> " + d.get(s.getNom()));
-		}
-	}
-
-	public static void main(String[] args) 
-	{
-		// Création du graphe
-		Sommet A = new Sommet("A");
-		Sommet B = new Sommet("B");
-		Sommet C = new Sommet("C");
-		Sommet D = new Sommet("D");
-
-		A.getLiens().add(new Lien("B", 1));
-		A.getLiens().add(new Lien("C", 4));
-		B.getLiens().add(new Lien("C", 2));
-		B.getLiens().add(new Lien("D", 6));
-		C.getLiens().add(new Lien("D", 3));
-
-		List<Sommet> graph = Arrays.asList(A, B, C, D);
-
-		bellmanFord(graph, "A");
 	}
 }

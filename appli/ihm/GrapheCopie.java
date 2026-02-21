@@ -32,7 +32,6 @@ public class GrapheCopie extends JPanel
 
 	public void actualiser()
 	{
-		System.out.println("=== ACTUALISATION GRAPHE COPIE ===");
 		
 		// Vider les listes
 		this.sommets.clear();
@@ -42,7 +41,6 @@ public class GrapheCopie extends JPanel
 		
 		if(sommetsMetier != null && !sommetsMetier.isEmpty())
 		{
-			System.out.println("Nombre de sommets métier: " + sommetsMetier.size());
 			
 			// Calculer les niveaux de profondeur pour chaque sommet (BFS)
 			HashMap<String, Integer> niveaux = calculerNiveaux(sommetsMetier);
@@ -72,10 +70,7 @@ public class GrapheCopie extends JPanel
 				
 				Cercle cercle = new Cercle(x, y, 15, nomSommet);
 				this.sommets.add(cercle);
-				System.out.println("Cercle créé: " + nomSommet + " à (" + x + "," + y + ")");
 			}
-
-			System.out.println("Nombre de cercles créés: " + this.sommets.size());
 
 			// Création des liens entre sommets
 			for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
@@ -106,16 +101,10 @@ public class GrapheCopie extends JPanel
 							lienMetier.getDistance()
 						);
 						this.liens.add(lienDessin);
-						System.out.println("Lien créé: " + sommetMetier.getNom() + " -> " + lienMetier.getNom());
 					}
 				}
 			}
 			
-			System.out.println("Nombre de liens créés: " + this.liens.size());
-		}
-		else
-		{
-			System.out.println("AUCUN SOMMET DISPONIBLE !");
 		}
 		
 		// Forcer le redessin
@@ -187,8 +176,6 @@ public class GrapheCopie extends JPanel
 	protected void paintComponent(Graphics g)
 	{
 		super.paintComponent(g);
-		
-		System.out.println("paintComponent GrapheCopie appelé ! Cercles: " + this.sommets.size() + ", Liens: " + this.liens.size());
 		
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 

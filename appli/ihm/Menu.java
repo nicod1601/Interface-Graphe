@@ -19,6 +19,7 @@ public class Menu extends JPanel implements ActionListener
 	private JMenuBar menuBar;
 	private JMenu    menuFichier;
 	private JMenu    menuEdition;
+	private JMenu    menuMode;
 	private JMenu    menuOptions;
 	private JButton  btnMode;
 
@@ -54,13 +55,17 @@ public class Menu extends JPanel implements ActionListener
 		this.menuEdition = Theme.menu("✏️ Éditer");
 		this.menuEdition.add(Theme.menuItem("✏️ Editer",         Theme.ACCENT));
 
-		this.menuOptions = Theme.menu("⚙️ Options");
-		this.menuOptions.add(Theme.menuItem("⚙️ Dijkstra",           Theme.SUCCESS));
-		this.menuOptions.add(Theme.menuItem("⚙️ BellmanFordMetier",  Theme.WARNING));
-		this.menuOptions.add(Theme.menuItem("⚙️ Désactiver",         Theme.TEXT_MUTED));
+		this.menuMode = Theme.menu("💡 Modes");
+		this.menuMode.add(Theme.menuItem("1️⃣ Dijkstra",           Theme.SUCCESS));
+		this.menuMode.add(Theme.menuItem("2️⃣ BellmanFordMetier",  Theme.WARNING));
+		this.menuMode.add(Theme.menuItem("3️⃣ Désactiver",         Theme.TEXT_MUTED));
+
+		this.menuOptions = Theme.menu("💡 Paramètres");
+			this.menuOptions.add(Theme.menuItem("⚙️ Thème", Theme.ACCENT));
 
 		this.menuBar.add(this.menuFichier);
 		this.menuBar.add(this.menuEdition);
+		this.menuBar.add(this.menuMode);
 		this.menuBar.add(this.menuOptions);
 		panelMenu.add(this.menuBar);
 
@@ -119,7 +124,6 @@ public class Menu extends JPanel implements ActionListener
 				this.ouvrirFichier();
 				break;
 			case "💾 Enregistrer":
-				System.out.println("Enregistrer");
 				break;
 			case "❌ Quitter":
 				System.exit(0);
@@ -153,7 +157,6 @@ public class Menu extends JPanel implements ActionListener
 		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
 		{
 			String nomFichier = "" + chooser.getSelectedFile();
-			System.out.println("Fichier sélectionné : " + nomFichier);
 			this.ctrl.getSommets().clear();
 			this.ctrl.setLiens(nomFichier);
 			this.appli.afficher("Graphe");

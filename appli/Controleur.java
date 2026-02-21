@@ -38,15 +38,7 @@ public class Controleur
 
 	public void Mode(String mode)
 	{
-		if(mode.equals("Dijikstra"))
-		{
-			System.out.println("Dijikstra");
-		}
-		
-		if(mode.equals("Bellman-Ford"))
-		{
-			System.out.println("Bellman-Ford");
-		}
+
 	}
 
 	public static void main(String[] args) 

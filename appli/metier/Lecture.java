@@ -26,7 +26,6 @@ public class Lecture
 	{
 		if(this.lien.equals(""))
 		{
-			System.out.println("Aucun lien n'est défini");
 			return;
 		}
 
@@ -45,8 +44,6 @@ public class Lecture
 				String nom = parts[0].trim();
 				String lienSommet = parts[1].trim();
 				int distance = Integer.parseInt(parts[2].trim());
-
-				System.out.println(nom + " -> " + lienSommet + " (" + distance + ")");
 
 				// ajout du sommet à la liste des sommets
 				if (this.sommets.contains(nom) == false)
@@ -76,29 +73,9 @@ public class Lecture
 				}
 
 			}
-
-			for (int cpt = 0; cpt < this.sommets.size(); cpt++) 
-			{
-				System.out.print(this.sommets.get(cpt) + " ");
-			}
-
-			System.out.println();
-
-			for (int cpt = 0; cpt < this.sommetsObjet.size(); cpt++) 
-			{
-				System.out.print(this.sommetsObjet.get(cpt).getNom() + " : ");
-				for (Lien lien : this.sommetsObjet.get(cpt).getLiens())
-				{
-					System.out.print(lien + " ");
-				}
-
-				System.out.println();
-			}
 			
-			System.out.println();
 
 		} catch (FileNotFoundException e) {
-			System.out.println("Fichier introuvable");
 		}
 	}
 
@@ -118,16 +95,10 @@ public class Lecture
 		else
 			this.sommetsObjet = nouvellesSommets;
 
-
-		for(Sommet s : this.sommetsObjet)
-		{
-			System.out.println("----Sommet : " + s.getNom() );
-		}
 	}
 
 	public String getDocument()
 	{
-		System.out.println("Document : \n" + document);
 		return document;
 	}
 

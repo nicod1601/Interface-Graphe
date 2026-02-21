@@ -47,8 +47,6 @@ public class Graphe extends JPanel
 		if(this.sommetsObjet == null || this.sommetsObjet.isEmpty())
 			return;
 
-		System.out.println("Nombre de sommets: " + this.sommetsObjet.size());
-
 		// Calculer les niveaux de profondeur pour chaque sommet (BFS)
 		HashMap<String, Integer> niveaux = calculerNiveaux();
 		HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
@@ -77,10 +75,7 @@ public class Graphe extends JPanel
 
 			Cercle cercle = new Cercle(x, y, 20, nomSommet);
 			this.sommets.add(cercle);
-			System.out.println("Cercle créé: " + nomSommet + " à (" + x + "," + y + ") niveau=" + niveau);
 		}
-
-		System.out.println("Nombre de cercles créés: " + this.sommets.size());
 
 		// Création des liens entre sommets
 		for(int cpt = 0; cpt < this.sommetsObjet.size(); cpt++)
@@ -182,7 +177,7 @@ public class Graphe extends JPanel
 	{
 		super.paintComponent(g);
 		
-		System.out.println("paintComponent appelé ! Cercles: " + this.sommets.size() + ", Liens: " + this.liens.size());
+
 		
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
@@ -213,11 +208,6 @@ public class Graphe extends JPanel
 
 		// Reconstruire la représentation graphique puis rafraîchir
 		buildGraph();
-
-		for(int cpt = 0; cpt < this.sommets.size(); cpt++)
-		{
-			System.out.println("Sommet : " + this.sommets.get(cpt).getNom());
-		}
 
 		this.revalidate();
 		this.repaint();

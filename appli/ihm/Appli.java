@@ -22,6 +22,7 @@ public class Appli extends JFrame
 		Image icon = Toolkit.getDefaultToolkit().getImage("./appli/logo.png");
 		this.setIconImage(icon);
 		this.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+		this.setSize(800,610);
 		this.setLocationRelativeTo(null);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.getContentPane().setBackground(Theme.BACKGROUND);
