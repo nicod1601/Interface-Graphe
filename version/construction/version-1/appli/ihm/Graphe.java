@@ -29,11 +29,16 @@ public class Graphe extends JPanel
 		this.liens = new ArrayList<>();
 		this.sommetsObjet = this.ctrl.getSommets();
 
+		/* Construire la représentation graphique à partir des données */
 		buildGraph();
 	}
 
+	/**
+	 * Construit les cercles et liens à partir de `sommetsObjet`.
+	 */
 	private void buildGraph()
 	{
+		// Réinitialiser les listes de dessins
 		if(this.sommets == null) this.sommets = new ArrayList<>();
 		if(this.liens == null) this.liens = new ArrayList<>();
 		this.sommets.clear();
@@ -42,6 +47,7 @@ public class Graphe extends JPanel
 		if(this.sommetsObjet == null || this.sommetsObjet.isEmpty())
 			return;
 
+		// Calculer les niveaux de profondeur pour chaque sommet (BFS)
 		HashMap<String, Integer> niveaux = calculerNiveaux();
 		HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
 
@@ -50,16 +56,20 @@ public class Graphe extends JPanel
 		int margeGauche = 100;
 		int margeHaut = 100;
 
+		// Création des cercles pour chaque sommet
 		for(int cpt = 0; cpt < this.sommetsObjet.size(); cpt++)
 		{
 			Sommet sommetMetier = this.sommetsObjet.get(cpt);
 			String nomSommet = sommetMetier.getNom();
 
+			// Récupérer le niveau de profondeur
 			int niveau = niveaux.getOrDefault(nomSommet, 0);
 
+			// Compter combien de sommets au même niveau
 			int positionDansNiveau = compteurParNiveau.getOrDefault(niveau, 0);
 			compteurParNiveau.put(niveau, positionDansNiveau + 1);
 
+			// Calculer les coordonnées
 			int x = margeGauche + (niveau * espaceHorizontal);
 			int y = margeHaut + (positionDansNiveau * espaceVertical);
 
@@ -67,12 +77,14 @@ public class Graphe extends JPanel
 			this.sommets.add(cercle);
 		}
 
+		// Création des liens entre sommets
 		for(int cpt = 0; cpt < this.sommetsObjet.size(); cpt++)
 		{
 			Sommet sommetMetier = this.sommetsObjet.get(cpt);
 
 			for(appli.metier.Lien lienMetier : sommetMetier.getLiens())
 			{
+				// Ignorer les liens vides
 				if(lienMetier.getNom() == null || lienMetier.getNom().trim().isEmpty())
 					continue;
 
@@ -99,6 +111,9 @@ public class Graphe extends JPanel
 		}
 	}
 
+	/**
+	 * Calcule le niveau de profondeur de chaque sommet avec un parcours BFS
+	 */
 	private HashMap<String, Integer> calculerNiveaux()
 	{
 		HashMap<String, Integer> niveaux = new HashMap<>();
@@ -107,6 +122,7 @@ public class Graphe extends JPanel
 		if(this.sommetsObjet.isEmpty())
 			return niveaux;
 		
+		// Partir du premier sommet comme racine
 		Sommet racine = this.sommetsObjet.get(0);
 		Queue<String> file = new LinkedList<>();
 		file.add(racine.getNom());
@@ -118,6 +134,7 @@ public class Graphe extends JPanel
 			String nomCourant = file.poll();
 			int niveauCourant = niveaux.get(nomCourant);
 			
+			// Trouver le sommet correspondant
 			Sommet sommetCourant = null;
 			for(Sommet s : this.sommetsObjet)
 			{
@@ -130,6 +147,7 @@ public class Graphe extends JPanel
 			
 			if(sommetCourant != null)
 			{
+				// Parcourir les voisins
 				for(appli.metier.Lien lien : sommetCourant.getLiens())
 				{
 					String nomVoisin = lien.getNom();
@@ -143,6 +161,7 @@ public class Graphe extends JPanel
 			}
 		}
 		
+		// Sommets non visités (graphe non connexe)
 		for(Sommet s : this.sommetsObjet)
 		{
 			if(!niveaux.containsKey(s.getNom()))
@@ -175,6 +194,9 @@ public class Graphe extends JPanel
 		}
 	}
 		
+	/**
+	 * Méthode pour rafraîchir l'affichage après modification
+	 */
 	public void actualiser()
 	{
 		repaint();
@@ -184,6 +206,7 @@ public class Graphe extends JPanel
 	{
 		this.sommetsObjet = this.ctrl.getSommets();
 
+		// Reconstruire la représentation graphique puis rafraîchir
 		buildGraph();
 
 		this.revalidate();

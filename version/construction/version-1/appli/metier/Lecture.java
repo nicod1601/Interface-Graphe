@@ -45,6 +45,7 @@ public class Lecture
 				String lienSommet = parts[1].trim();
 				int distance = Integer.parseInt(parts[2].trim());
 
+				// ajout du sommet à la liste des sommets
 				if (this.sommets.contains(nom) == false)
 				{
 					this.sommets.add(nom);
@@ -83,6 +84,10 @@ public class Lecture
 		return sommetsObjet;
 	}
 
+	/**
+	 * Remplace la liste interne des sommets par une nouvelle liste fournie.
+	 * Utilisé pour mettre à jour les données après édition.
+	 */
 	public void setSommets(ArrayList<Sommet> nouvellesSommets)
 	{
 		if (nouvellesSommets == null)

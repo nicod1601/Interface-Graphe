@@ -9,6 +9,7 @@ public class Cercle
 	private int    rayon;
 	private String nom;
 
+	// États visuels (pour coloration Dijkstra / sélection future)
 	private boolean selectionne = false;
 	private boolean visite      = false;
 
@@ -26,17 +27,18 @@ public class Cercle
 		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,   RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
+		// ── Couleurs selon état ───────────────────────────────────────────────
 		Color fill, border, textColor;
 
 		if (selectionne)
 		{
-			fill      = new Color(0, 120, 212);
+			fill      = new Color(0, 120, 212);   // bleu plein
 			border    = new Color(0,  80, 160);
 			textColor = Color.WHITE;
 		}
 		else if (visite)
 		{
-			fill      = new Color(0, 120, 212, 30);
+			fill      = new Color(0, 120, 212, 30);  // bleu très léger
 			border    = new Color(0, 120, 212);
 			textColor = new Color(0, 80, 160);
 		}
@@ -47,13 +49,16 @@ public class Cercle
 			textColor = new Color(30, 30, 30);
 		}
 
+		// ── Fond ─────────────────────────────────────────────────────────────
 		g2.setColor(fill);
 		g2.fillOval(x - rayon, y - rayon, rayon * 2, rayon * 2);
 
+		// ── Bordure ───────────────────────────────────────────────────────────
 		g2.setColor(border);
 		g2.setStroke(new BasicStroke(1.8f));
 		g2.drawOval(x - rayon, y - rayon, rayon * 2, rayon * 2);
 
+		// ── Nom centré ────────────────────────────────────────────────────────
 		Font font = new Font("Segoe UI", Font.BOLD, Math.max(9, rayon - 5));
 		g2.setFont(font);
 		g2.setColor(textColor);

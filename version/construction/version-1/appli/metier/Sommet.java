@@ -20,6 +20,10 @@ public class Sommet
 		this.liens = new ArrayList<Lien>();
 	}
 
+	/*
+		GETTERS 
+	*/
+
 	public String getNom()
 	{
 		return nom;
@@ -30,6 +34,9 @@ public class Sommet
 		return liens;
 	}
 
+	/*
+		SETTERS
+	*/
 	public void setNom(String nom)
 	{
 		this.nom = nom;

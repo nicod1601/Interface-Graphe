@@ -25,12 +25,15 @@ public class GrapheCopie extends JPanel
 		this.sommets = new ArrayList<>();
 		this.liens = new ArrayList<>();
 		
+		// Définir une taille préférée et une couleur de fond
 		this.setPreferredSize(new java.awt.Dimension(600, 300));
 		this.setBackground(Color.WHITE);
 	}
 
 	public void actualiser()
 	{
+		
+		// Vider les listes
 		this.sommets.clear();
 		this.liens.clear();
 		
@@ -39,21 +42,25 @@ public class GrapheCopie extends JPanel
 		if(sommetsMetier != null && !sommetsMetier.isEmpty())
 		{
 			
+			// Calculer les niveaux de profondeur pour chaque sommet (BFS)
 			HashMap<String, Integer> niveaux = calculerNiveaux(sommetsMetier);
 			HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
 			
-			int espaceHorizontal = 100;
-			int espaceVertical = 60;
+			int espaceHorizontal = 100;  // Espace entre colonnes
+			int espaceVertical = 60;     // Espace entre lignes
 			int margeGauche = 50;
 			int margeHaut = 50;
 			
+			// Création des cercles pour chaque sommet
 			for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
 			{
 				Sommet sommetMetier = sommetsMetier.get(cpt);
 				String nomSommet = sommetMetier.getNom();
 				
+				// Récupérer le niveau de profondeur
 				int niveau = niveaux.getOrDefault(nomSommet, 0);
 				
+				// Compter combien de sommets au même niveau
 				int positionDansNiveau = compteurParNiveau.getOrDefault(niveau, 0);
 				compteurParNiveau.put(niveau, positionDansNiveau + 1);
 				
@@ -65,13 +72,14 @@ public class GrapheCopie extends JPanel
 				this.sommets.add(cercle);
 			}
 
-		
+			// Création des liens entre sommets
 			for(int cpt = 0; cpt < sommetsMetier.size(); cpt++)
 			{
 				Sommet sommetMetier = sommetsMetier.get(cpt);
 				
 				for(appli.metier.Lien lienMetier : sommetMetier.getLiens())
 				{
+					// Ignorer les liens vides
 					if(lienMetier.getNom() == null || lienMetier.getNom().trim().isEmpty())
 						continue;
 					
@@ -98,7 +106,8 @@ public class GrapheCopie extends JPanel
 			}
 			
 		}
-			
+		
+		// Forcer le redessin
 		this.repaint();
 	}
 

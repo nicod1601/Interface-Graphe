@@ -26,20 +26,24 @@ public class Lien
 		int x2 = c2.getX(), y2 = c2.getY();
 		int r1 = c1.getRayon(), r2 = c2.getRayon();
 
+		// Vecteur normalisé
 		double dx  = x2 - x1, dy = y2 - y1;
 		double len = Math.sqrt(dx * dx + dy * dy);
 		if (len < 1) { g2.dispose(); return; }
 		double ux = dx / len, uy = dy / len;
 
+		// Points d'attache sur les bords des cercles
 		int sx = (int)(x1 + ux * (r1 + 3));
 		int sy = (int)(y1 + uy * (r1 + 3));
-		int ex = (int)(x2 - ux * (r2 + 8));
+		int ex = (int)(x2 - ux * (r2 + 8));  // décalage pour la pointe de flèche
 		int ey = (int)(y2 - uy * (r2 + 8));
 
+		// ── Ligne ────────────────────────────────────────────────────────────
 		g2.setColor(new Color(180, 180, 180));
 		g2.setStroke(new BasicStroke(1.2f));
 		g2.drawLine(sx, sy, ex, ey);
 
+		// ── Flèche ────────────────────────────────────────────────────────────
 		double angle = Math.atan2(dy, dx);
 		AffineTransform old = g2.getTransform();
 		g2.translate(ex + ux * 4, ey + uy * 4);
@@ -53,6 +57,7 @@ public class Lien
 		g2.fill(arrow);
 		g2.setTransform(old);
 
+		// ── Badge distance ────────────────────────────────────────────────────
 		if (distance > 0)
 		{
 			int mx = (sx + ex) / 2;
@@ -66,12 +71,14 @@ public class Lien
 			int th  = fm.getAscent();
 			int pad = 3;
 
+			// Fond blanc avec bordure légère
 			g2.setColor(Color.WHITE);
 			g2.fillRoundRect(mx - tw / 2 - pad, my - th - 1, tw + pad * 2, th + pad, 4, 4);
 			g2.setColor(new Color(200, 200, 200));
 			g2.setStroke(new BasicStroke(0.8f));
 			g2.drawRoundRect(mx - tw / 2 - pad, my - th - 1, tw + pad * 2, th + pad, 4, 4);
 
+			// Texte en bleu
 			g2.setColor(new Color(0, 120, 212));
 			g2.drawString(label, mx - tw / 2, my + 1);
 		}
