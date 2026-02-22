@@ -5,6 +5,11 @@ import java.io.FileNotFoundException;
 import java.util.ArrayList;
 import java.util.Scanner;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.*;
+
 public class Lecture
 {
 	private String lien;
@@ -14,69 +19,83 @@ public class Lecture
 
 	public Lecture()
 	{
-		this.sommets = new ArrayList<>();
+		this.sommets      = new ArrayList<>();
 		this.sommetsObjet = new ArrayList<>();
-		this.lien = "";
-		this.document = "";
+		this.lien         = "";
+		this.document     = "";
 
-		this.lecture();
+		this.lectureXML();
 	}
 
-	public void lecture()
+	public void lectureXML()
 	{
+
 		if(this.lien.equals(""))
 		{
 			return;
 		}
-
-		try
+		else
 		{
-			Scanner sc = new Scanner(new File(this.lien));
-
-			while (sc.hasNextLine())
-			{
-				String line = sc.nextLine();
-
-				this.document += line + "\n";
-
-				String[] parts = line.split("\\|");
-
-				String nom = parts[0].trim();
-				String lienSommet = parts[1].trim();
-				int distance = Integer.parseInt(parts[2].trim());
-
-				if (this.sommets.contains(nom) == false)
-				{
-					this.sommets.add(nom);
-					this.sommetsObjet.add(new Sommet(nom));
-
-					for (int cpt = 0; cpt < this.sommets.size(); cpt++)
-					{
-						if (this.sommets.get(cpt).equals(nom))
-						{
-
-							this.sommetsObjet.get(cpt).getLiens().add(new Lien(lienSommet, distance));
-						}
-					}
-
-				} 
-				else
-				{
-					for (int cpt = 0; cpt < this.sommets.size(); cpt++)
-					{
-						if (this.sommets.get(cpt).equals(nom))
-						{
-							this.sommetsObjet.get(cpt).getLiens().add(new Lien(lienSommet, distance));
-						}
-					}
-				}
-
-			}
+			File file = new File(this.lien);
 			
+			try
+			{
+				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+				DocumentBuilder        builder = factory.newDocumentBuilder();
+				Document 			   doc     = (Document) builder.parse(file);
 
-		} catch (FileNotFoundException e) {
+				NodeList sommetsNodeList = doc.getElementsByTagName("sommet");
+				
+				for(int cpt = 0; cpt < sommetsNodeList.getLength(); cpt++)
+				{
+					Element elt = (Element) sommetsNodeList.item(cpt);
+
+					String nom        = elt.getAttribute("nom");
+					String lien       = elt.getAttribute("lien");
+					int distance      = Integer.parseInt(elt.getAttribute("distance"));
+
+					this.document = this.document + nom + " --> " + lien + " " + distance + "\n";
+
+
+					if (this.sommets.contains(nom) == false)
+					{
+						this.sommets.add(nom);
+						this.sommetsObjet.add(new Sommet(nom));
+
+						for (int cpt1 = 0; cpt1 < this.sommets.size(); cpt1++)
+						{
+							if (this.sommets.get(cpt1).equals(nom))
+							{
+
+								this.sommetsObjet.get(cpt1).getLiens().add(new Lien(lien, distance));
+								break;
+							}
+						}
+
+					} 
+					else
+					{
+						for (int cpt2 = 0; cpt2 < this.sommets.size(); cpt2++)
+						{
+							if (this.sommets.get(cpt2).equals(nom))
+							{
+								this.sommetsObjet.get(cpt2).getLiens().add(new Lien(lien, distance));
+							}
+						}
+					}
+
+				}
+				
+			}
+			catch(Exception e)
+			{
+				e.printStackTrace();
+				System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
+				return;
+			}
 		}
 	}
+
 
 	public ArrayList<Sommet> getSommets()
 	{
@@ -100,6 +119,6 @@ public class Lecture
 	public void setLien(String lien)
 	{
 		this.lien = lien;
-		this.lecture();
+		this.lectureXML();
 	}
 }
