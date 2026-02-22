@@ -138,6 +138,7 @@ public class Edit extends JPanel implements ActionListener
 				break;
 			case "➖ Supprimer":
 				this.modifierTableau("-");
+				this.rafraichir();
 				break;
 			case "↩️ Annuler":
 				this.appli.afficher("Annuler");
