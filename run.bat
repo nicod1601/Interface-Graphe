@@ -1,8 +1,8 @@
 @echo off
-javac "@compile.list" -d class
+javac "@compile.list" -d bin
 if %errorlevel% neq 0 (
     exit /b %errorlevel%
 )
-cd class
+cd bin
 start javaw appli.Controleur
 cd ..
