@@ -57,7 +57,6 @@ public class GrapheCopie extends JPanel
 				int positionDansNiveau = compteurParNiveau.getOrDefault(niveau, 0);
 				compteurParNiveau.put(niveau, positionDansNiveau + 1);
 				
-				// Calculer les coordonnées
 				int x = margeGauche + (niveau * espaceHorizontal);
 				int y = margeHaut + (positionDansNiveau * espaceVertical);
 				
@@ -102,9 +101,7 @@ public class GrapheCopie extends JPanel
 		this.repaint();
 	}
 
-	/**
-	 * Calcule le niveau de profondeur de chaque sommet avec un parcours BFS
-	 */
+
 	private HashMap<String, Integer> calculerNiveaux(ArrayList<Sommet> sommetsMetier)
 	{
 		HashMap<String, Integer> niveaux = new HashMap<>();
@@ -113,7 +110,6 @@ public class GrapheCopie extends JPanel
 		if(sommetsMetier.isEmpty())
 			return niveaux;
 		
-		// Partir du premier sommet comme racine
 		Sommet racine = sommetsMetier.get(0);
 		Queue<String> file = new LinkedList<>();
 		file.add(racine.getNom());
@@ -125,7 +121,6 @@ public class GrapheCopie extends JPanel
 			String nomCourant = file.poll();
 			int niveauCourant = niveaux.get(nomCourant);
 			
-			// Trouver le sommet correspondant
 			Sommet sommetCourant = null;
 			for(Sommet s : sommetsMetier)
 			{
@@ -138,7 +133,6 @@ public class GrapheCopie extends JPanel
 			
 			if(sommetCourant != null)
 			{
-				// Parcourir les voisins
 				for(appli.metier.Lien lien : sommetCourant.getLiens())
 				{
 					String nomVoisin = lien.getNom();
@@ -152,7 +146,6 @@ public class GrapheCopie extends JPanel
 			}
 		}
 		
-		// Sommets non visités (graphe non connexe)
 		for(Sommet s : sommetsMetier)
 		{
 			if(!niveaux.containsKey(s.getNom()))
@@ -171,14 +164,12 @@ public class GrapheCopie extends JPanel
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, 
 							RenderingHints.VALUE_ANTIALIAS_ON);
-		
-		// Dessiner les liens
+
 		for(appli.ihm.dessin.Lien lien : this.liens)
 		{
 			lien.dessiner(g2d);
 		}
 		
-		// Dessiner les cercles
 		for(Cercle cercle : this.sommets)
 		{
 			cercle.dessiner(g2d);
