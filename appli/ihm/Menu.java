@@ -47,8 +47,9 @@ public class Menu extends JPanel implements ActionListener
 		this.menuBar.setOpaque(true);
 
 		this.menuFichier = Theme.menu("📁 Fichier");
-		this.menuFichier.add(Theme.menuItem("📄 Ouvrir Fichier", Theme.ACCENT));
-		this.menuFichier.add(Theme.menuItem("💾 Enregistrer",    Theme.SUCCESS));
+		this.menuFichier.add(Theme.menuItem("📄 Ouvrir Fichier"  , Theme.ACCENT));
+		this.menuFichier.add(Theme.menuItem("💾 Sauvegarder"     , Theme.SUCCESS));
+		this.menuFichier.add(Theme.menuItem("💾 Enregistrer sous", Theme.SUCCESS));
 		this.menuFichier.addSeparator();
 		this.menuFichier.add(Theme.menuItem("❌ Quitter",        Theme.DANGER));
 
@@ -91,8 +92,7 @@ public class Menu extends JPanel implements ActionListener
 	{
 		this.btnMode.setText(nom);
 		this.btnMode.setForeground(color);
-		this.btnMode.setBackground(
-			new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 18));
+		this.btnMode.setBackground(new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 18));
 		this.btnMode.setBorder(BorderFactory.createCompoundBorder(
 			BorderFactory.createLineBorder(
 				new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 80), 1, true),
@@ -124,6 +124,7 @@ public class Menu extends JPanel implements ActionListener
 				this.ouvrirFichier();
 				break;
 			case "💾 Enregistrer":
+				this.ctrl.sauvegarderXML();
 				break;
 			case "❌ Quitter":
 				System.exit(0);

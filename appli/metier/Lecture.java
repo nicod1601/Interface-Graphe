@@ -7,6 +7,11 @@ import java.util.Scanner;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
+import javax.xml.transform.dom.DOMSource;
+import javax.xml.transform.stream.StreamResult;
 
 import org.w3c.dom.*;
 
@@ -93,6 +98,53 @@ public class Lecture
 				System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
 				return;
 			}
+		}
+	}
+
+	public void sauvegarderXML()
+	{
+		try
+		{
+			File dir = new File("donnee");
+			
+			if (!dir.exists())
+			{
+				dir.mkdirs();
+			}
+
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+            DocumentBuilder builder = factory.newDocumentBuilder();
+            Document doc = builder.newDocument();
+
+			Element root = doc.createElement("graphe");
+			doc.appendChild(root);
+
+			for (Sommet sommet : this.sommetsObjet)
+			{
+				for (Lien lien : sommet.getLiens())
+				{
+					Element elt = doc.createElement("sommet");
+					elt.setAttribute("nom", sommet.getNom());
+					elt.setAttribute("lien", lien.getNom());
+					elt.setAttribute("distance", String.valueOf(lien.getDistance()));
+					root.appendChild(elt);
+				}
+			}
+
+			// Écriture formatée
+			TransformerFactory tf = TransformerFactory.newInstance();
+			Transformer transformer = tf.newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
+			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
+
+			transformer.transform(new DOMSource(doc), new StreamResult(new File(this.lien)));
+		}
+		catch (Exception ex)
+		{
+			System.err.println("Erreur lors de la sauvegarde du fichier XML : " + ex.getMessage());
+			ex.printStackTrace();
+			return;
 		}
 	}
 

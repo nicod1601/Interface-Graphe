@@ -41,6 +41,11 @@ public class Controleur
 
 	}
 
+	public void sauvegarderXML()
+	{
+		this.lecture.sauvegarderXML();
+	}
+
 	public static void main(String[] args) 
 	{
 		new Controleur();
