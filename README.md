@@ -83,8 +83,11 @@ java -cp bin appli.ihm.Appli
 Les graphes sont stockés au format XML :
 ```xml
 <graphe>
-  <sommet id="1">...</sommet>
-  <lien source="1" destination="2">...</lien>
+    <sommet nom="A" lien="B" distance="5"/>
+    <sommet nom="A" lien="C" distance="10"/>
+    <sommet nom="B" lien="D" distance="3"/>
+    <sommet nom="C" lien="D" distance="2"/>
+    <sommet nom="D" lien="" distance="0"/>
 </graphe>
 ```
 
