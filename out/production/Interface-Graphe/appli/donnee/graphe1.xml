@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+<graphe>
+    <sommet nom="A" lien="B" distance="5"/>
+    <sommet nom="A" lien="C" distance="10"/>
+    <sommet nom="B" lien="D" distance="3"/>
+    <sommet nom="C" lien="D" distance="2"/>
+    <sommet nom="D" lien="" distance="0"/>
+</graphe>
