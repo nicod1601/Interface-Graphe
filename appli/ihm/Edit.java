@@ -22,6 +22,8 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.event.TableModelEvent;
+import javax.swing.event.TableModelListener;
 
 public class Edit extends JPanel implements ActionListener
 {
@@ -110,6 +112,23 @@ public class Edit extends JPanel implements ActionListener
 		Theme.styleTable(this.table);
 		this.table.getColumnModel().getColumn(2).setCellEditor(new DistanceEditor());
 
+		// Rafraîchir automatiquement après chaque modification de cellule
+		this.tableModel.addTableModelListener(new TableModelListener()
+		{
+			private boolean enCours = false;
+
+			public void tableChanged(TableModelEvent e)
+			{
+				if (e.getType() != TableModelEvent.UPDATE) return;
+				if (enCours) return;
+				enCours = true;
+				javax.swing.SwingUtilities.invokeLater(() -> {
+					rafraichir();
+					enCours = false;
+				});
+			}
+		});
+
 		JScrollPane scrollTable = new JScrollPane(this.table);
 		scrollTable.setBorder(Theme.borderInput());
 		scrollTable.getViewport().setBackground(Theme.PANEL);
@@ -120,8 +139,9 @@ public class Edit extends JPanel implements ActionListener
 		/* ── Panel TabGraphe ── */
 		JPanel panelTabGraph = Theme.panelBackground();
 		panelTabGraph.setLayout(new GridLayout(2, 1, 0, 10));
-		panelTabGraph.add(panelTableau);
-		panelTabGraph.add(this.graphe);
+		this.graphe.setPreferredSize(new Dimension(0, 220));
+		panelTabGraph.add(panelTableau,  BorderLayout.CENTER);
+		panelTabGraph.add(this.graphe,   BorderLayout.SOUTH);
 
 		this.add(panelDocument, BorderLayout.WEST);
 		this.add(panelTabGraph, BorderLayout.CENTER);
@@ -177,7 +197,7 @@ public class Edit extends JPanel implements ActionListener
 		lblSrc.setFont(Theme.FONT_BOLD.deriveFont(16f));
 		lblSrc.setForeground(Theme.ACCENT);
 
-		JLabel lblFleche = new JLabel("--->");
+		JLabel lblFleche = new JLabel("──▶");
 		lblFleche.setFont(Theme.FONT_NORMAL.deriveFont(15f));
 		lblFleche.setForeground(Theme.TEXT_MUTED);
 
@@ -222,7 +242,11 @@ public class Edit extends JPanel implements ActionListener
 				JTable table, Object value, boolean isSelected, int row, int column)
 		{
 			this.field.setBackground(COLOR_OK);
-			return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+			super.getTableCellEditorComponent(table, value, isSelected, row, column);
+			javax.swing.SwingUtilities.invokeLater(() -> {
+				this.field.selectAll();
+			});
+			return this.field;
 		}
 
 		public boolean stopCellEditing()
@@ -307,6 +331,8 @@ public class Edit extends JPanel implements ActionListener
 			String nomSommet = (String) this.tableModel.getValueAt(i, 0);
 			String nomLien   = (String) this.tableModel.getValueAt(i, 1);
 			int    distance  = parseDistance(this.tableModel.getValueAt(i, 2));
+
+			if (nomSommet == null || nomSommet.trim().isEmpty()) continue;
 
 			if (distance < 0) { distance = 0; this.tableModel.setValueAt(0, i, 2); }
 

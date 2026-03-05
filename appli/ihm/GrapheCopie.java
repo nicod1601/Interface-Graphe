@@ -1,8 +1,8 @@
 package appli.ihm;
 
-import appli.ihm.dessin.*;
+import appli.ihm.dessin.Cercle;
+import appli.ihm.dessin.Lien;
 import appli.metier.Sommet;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -15,9 +15,11 @@ import javax.swing.JPanel;
 
 public class GrapheCopie extends JPanel
 {
-	private Edit                           edit;
-	private ArrayList<Cercle>              sommets;
-	private ArrayList<appli.ihm.dessin.Lien> liens;
+	private static final int DOT_STEP = 22;
+
+	private Edit              edit;
+	private ArrayList<Cercle> sommets;
+	private ArrayList<Lien>   liens;
 
 	private int largeurGraphe = 0;
 	private int hauteurGraphe = 0;
@@ -27,9 +29,7 @@ public class GrapheCopie extends JPanel
 		this.edit    = edit;
 		this.sommets = new ArrayList<>();
 		this.liens   = new ArrayList<>();
-
 		this.setPreferredSize(new java.awt.Dimension(600, 300));
-		this.setBackground(Color.WHITE);
 	}
 
 	public void actualiser()
@@ -37,20 +37,21 @@ public class GrapheCopie extends JPanel
 		this.sommets.clear();
 		this.liens.clear();
 
-		ArrayList<Sommet> sommetsMetier = this.edit.getSommets();
+		ArrayList<Sommet> tous = this.edit.getSommets();
+		if (tous == null || tous.isEmpty()) { repaint(); return; }
 
-		if (sommetsMetier == null || sommetsMetier.isEmpty())
-		{
-			repaint();
-			return;
-		}
+		// ── Filtrer les sommets sans nom ──────────────────────────────────────
+		ArrayList<Sommet> valides = new ArrayList<>();
+		for (Sommet s : tous)
+			if (s.getNom() != null && !s.getNom().trim().isEmpty())
+				valides.add(s);
 
-		// ── 1. Niveaux BFS ───────────────────────────────────────────────────
-		HashMap<String, Integer> niveaux = calculerNiveaux(sommetsMetier);
+		if (valides.isEmpty()) { repaint(); return; }
 
-		// ── 2. Taille par niveau ─────────────────────────────────────────────
+		HashMap<String, Integer> niveaux = calculerNiveaux(valides);
+
 		HashMap<Integer, Integer> tailleNiveau = new HashMap<>();
-		for (Sommet s : sommetsMetier)
+		for (Sommet s : valides)
 		{
 			int niv = niveaux.getOrDefault(s.getNom(), 0);
 			tailleNiveau.put(niv, tailleNiveau.getOrDefault(niv, 0) + 1);
@@ -65,12 +66,11 @@ public class GrapheCopie extends JPanel
 		this.largeurGraphe = (nbNiveaux - 1) * espaceH;
 		this.hauteurGraphe = (maxParNiveau - 1) * espaceV;
 
-		// ── 3. Placement centré verticalement par niveau ─────────────────────
 		HashMap<Integer, Integer> compteurParNiveau = new HashMap<>();
 
-		for (int cpt = 0; cpt < sommetsMetier.size(); cpt++)
+		for (int cpt = 0; cpt < valides.size(); cpt++)
 		{
-			Sommet s      = sommetsMetier.get(cpt);
+			Sommet s      = valides.get(cpt);
 			String nom    = s.getNom();
 			int    niveau = niveaux.getOrDefault(nom, 0);
 			int    posV   = compteurParNiveau.getOrDefault(niveau, 0);
@@ -86,47 +86,33 @@ public class GrapheCopie extends JPanel
 			this.sommets.add(new Cercle(x, y, 15, nom));
 		}
 
-		// ── 4. Liens ─────────────────────────────────────────────────────────
-		for (int cpt = 0; cpt < sommetsMetier.size(); cpt++)
+		for (int cpt = 0; cpt < valides.size(); cpt++)
 		{
-			Sommet sommetMetier = sommetsMetier.get(cpt);
+			Sommet sommetMetier = valides.get(cpt);
 			for (appli.metier.Lien lienMetier : sommetMetier.getLiens())
 			{
-				if (lienMetier.getNom() == null || lienMetier.getNom().trim().isEmpty())
-					continue;
+				String nomCible = lienMetier.getNom();
+				// Ignorer les liens vers un sommet sans nom
+				if (nomCible == null || nomCible.trim().isEmpty()) continue;
 
 				int indexCible = -1;
-				for (int i = 0; i < sommetsMetier.size(); i++)
-				{
-					if (sommetsMetier.get(i).getNom().equals(lienMetier.getNom()))
-					{
-						indexCible = i;
-						break;
-					}
-				}
+				for (int i = 0; i < valides.size(); i++)
+					if (valides.get(i).getNom().equals(nomCible)) { indexCible = i; break; }
 
 				if (indexCible != -1)
-				{
-					this.liens.add(new appli.ihm.dessin.Lien(
-						this.sommets.get(cpt),
-						this.sommets.get(indexCible),
-						lienMetier.getDistance()
-					));
-				}
+					this.liens.add(new Lien(this.sommets.get(cpt), this.sommets.get(indexCible), lienMetier.getDistance()));
 			}
 		}
 
 		repaint();
 	}
 
-	private HashMap<String, Integer> calculerNiveaux(ArrayList<Sommet> sommetsMetier)
+	private HashMap<String, Integer> calculerNiveaux(ArrayList<Sommet> valides)
 	{
 		HashMap<String, Integer> niveaux = new HashMap<>();
 		HashSet<String>          visites = new HashSet<>();
 
-		if (sommetsMetier.isEmpty()) return niveaux;
-
-		Sommet        racine = sommetsMetier.get(0);
+		Sommet        racine = valides.get(0);
 		Queue<String> file   = new LinkedList<>();
 		file.add(racine.getNom());
 		niveaux.put(racine.getNom(), 0);
@@ -138,10 +124,8 @@ public class GrapheCopie extends JPanel
 			int    niveauCourant = niveaux.get(nomCourant);
 
 			Sommet sommetCourant = null;
-			for (Sommet s : sommetsMetier)
-			{
+			for (Sommet s : valides)
 				if (s.getNom().equals(nomCourant)) { sommetCourant = s; break; }
-			}
 
 			if (sommetCourant != null)
 			{
@@ -158,7 +142,7 @@ public class GrapheCopie extends JPanel
 			}
 		}
 
-		for (Sommet s : sommetsMetier)
+		for (Sommet s : valides)
 			if (!niveaux.containsKey(s.getNom()))
 				niveaux.put(s.getNom(), 0);
 
@@ -170,15 +154,14 @@ public class GrapheCopie extends JPanel
 		super.paintComponent(g);
 
 		Graphics2D g2d = (Graphics2D) g;
-		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
-							 RenderingHints.VALUE_ANTIALIAS_ON);
+		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING, RenderingHints.VALUE_ANTIALIAS_ON);
 
 		// ── Fond dot-grid ─────────────────────────────────────────────────────
-		g2d.setColor(new Color(10, 13, 20));
+		g2d.setColor(Theme.BACKGROUND);
 		g2d.fillRect(0, 0, getWidth(), getHeight());
-		g2d.setColor(new Color(38, 52, 78));
-		for (int x = 22; x < getWidth(); x += 22)
-			for (int y = 22; y < getHeight(); y += 22)
+		g2d.setColor(Theme.BORDER);
+		for (int x = DOT_STEP; x < getWidth(); x += DOT_STEP)
+			for (int y = DOT_STEP; y < getHeight(); y += DOT_STEP)
 				g2d.fillOval(x - 1, y - 1, 2, 2);
 
 		if (this.sommets.isEmpty()) return;
@@ -192,11 +175,8 @@ public class GrapheCopie extends JPanel
 
 		g2d.translate(offsetX, offsetY);
 
-		for (appli.ihm.dessin.Lien lien : this.liens)
-			lien.dessiner(g2d);
-
-		for (Cercle cercle : this.sommets)
-			cercle.dessiner(g2d);
+		for (Lien lien : this.liens)       lien.dessiner(g2d);
+		for (Cercle cercle : this.sommets) cercle.dessiner(g2d);
 
 		g2d.translate(-offsetX, -offsetY);
 	}
