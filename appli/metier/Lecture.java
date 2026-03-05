@@ -1,20 +1,15 @@
 package appli.metier;
 
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.util.ArrayList;
-import java.util.Scanner;
-
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
-import javax.xml.transform.*;
+import javax.xml.transform.OutputKeys;
+import javax.xml.transform.Transformer;
+import javax.xml.transform.TransformerFactory;
 import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
-
-import org.w3c.dom.Document;
-import org.w3c.dom.Element;
-
-import java.io.File;
+import org.w3c.dom.*;
 
 public class Lecture
 {
@@ -106,54 +101,6 @@ public class Lecture
 	{
 		try
 		{
-			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document document = builder.newDocument();
-
-			Element root = document.createElement("graphe");
-			document.appendChild(root);
-
-			for (Sommet sommet : this.sommetsObjet)
-			{
-				Element som = document.createElement("sommet");
-				som.appendChild(document.createTextNode(sommet.getNom()));
-				root.appendChild(som);
-
-				int cpt = 0;
-
-				for (Lien lien : sommet.getLiens())
-				{
-					Element liens = document.createElement("lien" + cpt);
-					som.appendChild(liens);
-
-					Element name = document.createElement("nomLien");
-					liens.appendChild(document.createTextNode(sommet.getNom()));
-
-
-					elt.setAttribute("nom", sommet.getNom());
-					elt.setAttribute("lien", lien.getNom());
-					elt.setAttribute("distance", String.valueOf(lien.getDistance()));
-					root.appendChild(elt);
-				}
-			}
-
-
-			// Age element
-			Element age = document.createElement("age");
-			age.appendChild(document.createTextNode("20"));
-			root.appendChild(age);
-
-			// Save to file
-			TransformerFactory transformerFactory = TransformerFactory.newInstance();
-			Transformer transformer = transformerFactory.newTransformer();
-
-			DOMSource source = new DOMSource(document);
-			StreamResult result = new StreamResult(new File("data.xml"));
-
-			transformer.transform(source, result);
-
-			System.out.println("XML file created!");
-
 			File dir = new File("donnee");
 			
 			if (!dir.exists())
@@ -162,8 +109,8 @@ public class Lecture
 			}
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-            DocumentBuilder builder = factory.newDocumentBuilder();
-            Document doc = builder.newDocument();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = builder.newDocument();
 
 			Element root = doc.createElement("graphe");
 			doc.appendChild(root);
@@ -221,5 +168,23 @@ public class Lecture
 	{
 		this.lien = lien;
 		this.lectureXML();
+	}
+
+	public void Mode(String mode)
+	{
+		System.out.println("Mode : " + mode);
+
+
+		if (mode.equals("Bellman-Ford"))
+		{
+			BellmanFord bellmanFord = new BellmanFord(this.sommetsObjet);
+
+			ArrayList<String> chemin = bellmanFord.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
+
+			for (String s : chemin)
+			{
+				System.out.println(s);
+			}
+		}
 	}
 }

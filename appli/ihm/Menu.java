@@ -58,7 +58,7 @@ public class Menu extends JPanel implements ActionListener
 
 		this.menuMode = Theme.menu("💡 Modes");
 		this.menuMode.add(Theme.menuItem("1️⃣ Dijkstra",           Theme.SUCCESS));
-		this.menuMode.add(Theme.menuItem("2️⃣ BellmanFordMetier",  Theme.WARNING));
+		this.menuMode.add(Theme.menuItem("2️⃣ Bellman-Ford",       Theme.WARNING));
 		this.menuMode.add(Theme.menuItem("3️⃣ Désactiver",         Theme.TEXT_MUTED));
 
 		this.menuOptions = Theme.menu("💡 Paramètres");
@@ -85,20 +85,7 @@ public class Menu extends JPanel implements ActionListener
 		this.add(panelMenu, BorderLayout.WEST);
 		this.add(panelMode, BorderLayout.EAST);
 
-		attachMenuListeners();
-	}
-
-	private void updateModeBadge(String nom, java.awt.Color color)
-	{
-		this.btnMode.setText(nom);
-		this.btnMode.setForeground(color);
-		this.btnMode.setBackground(new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 18));
-		this.btnMode.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createLineBorder(
-				new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 80), 1, true),
-			BorderFactory.createEmptyBorder(3, 12, 3, 12)
-		));
-		this.btnMode.repaint();
+		this.attachMenuListeners();
 	}
 
 	private void attachMenuListeners()
@@ -110,6 +97,10 @@ public class Menu extends JPanel implements ActionListener
 		for (int i = 0; i < this.menuEdition.getItemCount(); i++)
 			if (this.menuEdition.getItem(i) != null)
 				this.menuEdition.getItem(i).addActionListener(this);
+
+		for (int i = 0; i < this.menuMode.getItemCount(); i++)
+			if (this.menuMode.getItem(i) != null)
+				this.menuMode.getItem(i).addActionListener(this);
 
 		for (int i = 0; i < this.menuOptions.getItemCount(); i++)
 			if (this.menuOptions.getItem(i) != null)
@@ -133,15 +124,15 @@ public class Menu extends JPanel implements ActionListener
 				this.appli.afficher("Edit");
 				break;
 			case "⚙️ Dijkstra":
-				updateModeBadge("Dijkstra",    Theme.SUCCESS);
+				this.updateModeBadge("Dijkstra",    Theme.SUCCESS);
 				this.ctrl.Mode("Dijikstra");
 				break;
-			case "⚙️ BellmanFordMetier":
-				updateModeBadge("Bellman-Ford", Theme.WARNING);
+			case "2️⃣ Bellman-Ford":
+				this.updateModeBadge("Bellman-Ford", Theme.WARNING);
 				this.ctrl.Mode("Bellman-Ford");
 				break;
 			case "⚙️ Désactiver":
-				updateModeBadge("Aucun", Theme.TEXT_MUTED);
+				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
 				break;
 		}
 	}
@@ -163,5 +154,18 @@ public class Menu extends JPanel implements ActionListener
 			this.appli.afficher("Graphe");
 			this.appli.fichier();
 		}
+	}
+
+	private void updateModeBadge(String nom, java.awt.Color color)
+	{
+		this.btnMode.setText(nom);
+		this.btnMode.setForeground(color);
+		this.btnMode.setBackground(new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 18));
+		this.btnMode.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(
+				new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 80), 1, true),
+			BorderFactory.createEmptyBorder(3, 12, 3, 12)
+		));
+		this.btnMode.repaint();
 	}
 }

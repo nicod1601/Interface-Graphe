@@ -38,7 +38,7 @@ public class Controleur
 
 	public void Mode(String mode)
 	{
-
+		this.lecture.Mode(mode);
 	}
 
 	public void sauvegarderXML()

@@ -1,26 +1,18 @@
 package appli.metier;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 
 public class BellmanFord
 {
-	private ArrayList<Sommet> cheminCourt;
-	private int distance;
-	private Lecture lecture;
+	private HashMap<String, Integer> distance;
+	private HashMap<String, String> precedent;
 	private ArrayList<Sommet> lstTest;
-
-	public BellmanFord(Lecture lecture)
-	{
-		this.cheminCourt = new ArrayList<>();
-		this.lecture = lecture;
-
-		this.calculCheminCourt();
-	}
 
 	public BellmanFord(ArrayList<Sommet> lst)
 	{
-		this.cheminCourt = new ArrayList<>();
-		this.lecture = null;
+		this.distance = new HashMap<>();
+		this.precedent = new HashMap<>();
 
 		this.lstTest = lst;
 
@@ -30,95 +22,55 @@ public class BellmanFord
 
 	public void calculCheminCourt()
 	{
-		if(this.lecture != null)
-		{
-			ArrayList<Sommet> sommets = this.lecture.getSommets();
-		}
-		else
-		{
-			ArrayList<Sommet> sommets = this.lstTest;
-		}
+		ArrayList<Sommet> sommets = this.lstTest;
 
-		this.cheminCourt.add(sommets.get(0));
-
-		for(Sommet c : this.cheminCourt)
-		{
-			if(c.getLiens().size() == 1)
-			{
-				Lien lien = c.getLiens().get(0);
-				for(Sommet l : sommets)
-				{
-					if (lien.getNom().equals(c.getNom()) && ! this.cheminCourt.contains(lien))
-					{
-						this.cheminCourt.add(l);
-					}
-				}
-			}
-			else
-			{
-				ArrayList<Lien> lstLien = c.getLiens();
-				int dist = lstLien.get(0).getDistance();
-				String nomSommet = lstLien.get(0).getNom();
-
-				for(Lien l : lstLien)
-				{
-					if(l.getDistance() < dist)
-					{
-						dist = l.getDistance();
-						nomSommet = l.getNom();
-					}
-
-
-					for(Sommet s : sommets)
-					{
-						if (s.getNom().equals(c.getNom()) && !this.cheminCourt.contains(s))
-						{
-							this.cheminCourt.add(s);
-						}
-					}
-				}
-			}
-		}
-	}
-
-	public ArrayList<Sommet> getCheminCourt()
-	{
-		return this.cheminCourt;
-	}
-
-	public static void main(String[] args)
-	{
-		// Création des sommets
-		Sommet A = new Sommet("A");
-		Sommet B = new Sommet("B");
-		Sommet C = new Sommet("C");
-		Sommet D = new Sommet("D");
-
-		// Création des liens
-		A.ajouterLien(new Lien("B", 5));
-		A.ajouterLien(new Lien("C", 2));
-
-		B.ajouterLien(new Lien("C", 1));
-		B.ajouterLien(new Lien("D", 4));
-
-		C.ajouterLien(new Lien("D", 7));
-
-		// Liste des sommets
-		ArrayList<Sommet> sommets = new ArrayList<>();
-		sommets.add(A);
-		sommets.add(B);
-		sommets.add(C);
-		sommets.add(D);
-
-		// Affichage du graphe
 		for (Sommet s : sommets)
+			this.distance.put(s.getNom(), Integer.MAX_VALUE);
+
+		this.distance.put(sommets.get(0).getNom(), 0);
+
+		for (int i = 0; i < sommets.size() - 1; i++)
 		{
-			System.out.println("Sommet " + s.getNom() + " : " + s.getLiens());
+			for (Sommet s : sommets)
+			{
+				for (Lien l : s.getLiens())
+				{
+					int distSource = this.distance.get(s.getNom());
+
+					if (distSource != Integer.MAX_VALUE && 
+						distSource + l.getDistance() < this.distance.get(l.getNom()))
+					{
+						this.distance.put(l.getNom(), distSource + l.getDistance());
+						this.precedent.put(l.getNom(), s.getNom());
+					}
+				}
+			}
+		}
+	}
+
+
+
+	public ArrayList<String> getChemin(String destination)
+	{
+		ArrayList<String> chemin = new ArrayList<>();
+		String courant = destination;
+
+		while (courant != null)
+		{
+			chemin.add(0, courant);
+			courant = this.precedent.get(courant);
 		}
 
-		// Test BellmanFord
-		BellmanFord bf = new BellmanFord();
+		return chemin;
+	}
 
-		System.out.println("Test terminé.");
+	public HashMap<String, Integer> getDistance()
+	{
+		return distance;
+	}
+
+	public HashMap<String, String> getPrecedent()
+	{
+		return precedent;
 	}
 }
