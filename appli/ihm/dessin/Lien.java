@@ -38,10 +38,27 @@ public class Lien
 		int ex = (int)(x2 - ux * (r2 + 8));
 		int ey = (int)(y2 - uy * (r2 + 8));
 
-		g2.setColor(new Color(180, 180, 180));
-		g2.setStroke(new BasicStroke(1.2f));
+		// ── Couleur et épaisseur selon enChemin ──────────────────────────────
+		Color couleurLigne, couleurFleche;
+		float epaisseur;
+		if (this.enChemin)
+		{
+			couleurLigne  = new Color(0, 120, 212);   // bleu accent
+			couleurFleche = new Color(0,  80, 160);
+			epaisseur     = 2.8f;
+		}
+		else
+		{
+			couleurLigne  = new Color(180, 180, 180);
+			couleurFleche = new Color(150, 150, 150);
+			epaisseur     = 1.2f;
+		}
+
+		g2.setColor(couleurLigne);
+		g2.setStroke(new BasicStroke(epaisseur));
 		g2.drawLine(sx, sy, ex, ey);
 
+		// ── Flèche ───────────────────────────────────────────────────────────
 		double angle = Math.atan2(dy, dx);
 		AffineTransform old = g2.getTransform();
 		g2.translate(ex + ux * 4, ey + uy * 4);
@@ -51,10 +68,11 @@ public class Lien
 		arrow.addPoint(0, 0);
 		arrow.addPoint(-arrowSize, -arrowSize / 2);
 		arrow.addPoint(-arrowSize,  arrowSize / 2);
-		g2.setColor(new Color(150, 150, 150));
+		g2.setColor(couleurFleche);
 		g2.fill(arrow);
 		g2.setTransform(old);
 
+		// ── Label distance ───────────────────────────────────────────────────
 		if (distance > 0)
 		{
 			int mx = (sx + ex) / 2;
@@ -70,11 +88,11 @@ public class Lien
 
 			g2.setColor(Color.WHITE);
 			g2.fillRoundRect(mx - tw / 2 - pad, my - th - 1, tw + pad * 2, th + pad, 4, 4);
-			g2.setColor(new Color(200, 200, 200));
+			g2.setColor(this.enChemin ? new Color(0, 80, 160) : new Color(200, 200, 200));
 			g2.setStroke(new BasicStroke(0.8f));
 			g2.drawRoundRect(mx - tw / 2 - pad, my - th - 1, tw + pad * 2, th + pad, 4, 4);
 
-			g2.setColor(new Color(0, 120, 212));
+			g2.setColor(this.enChemin ? new Color(0, 80, 160) : new Color(0, 120, 212));
 			g2.drawString(label, mx - tw / 2, my + 1);
 		}
 

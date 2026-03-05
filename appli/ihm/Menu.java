@@ -141,11 +141,18 @@ public class Menu extends JPanel implements ActionListener
 				break;
 			case "⚙️ Désactiver":
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
+				this.btnVoir.setEnabled(false);
+				this.ctrl.Mode("Aucun");
 				break;
 			case "👁 Voir chemin":
 				ArrayList<String> chemin = this.ctrl.getCheminCourt();
 				this.appli.voirChemin(chemin);
 				break;
+			case "3️⃣ Désactiver":
+			this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
+			this.btnVoir.setEnabled(false);
+			this.appli.voirChemin(new ArrayList<>());
+			break;
 		}
 	}
 

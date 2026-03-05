@@ -4,6 +4,8 @@ import appli.Controleur;
 import appli.metier.Lien;
 import appli.metier.Sommet;
 import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
@@ -11,11 +13,13 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
+import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
 import javax.swing.JEditorPane;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
+import javax.swing.JTextField;
 import javax.swing.table.DefaultTableModel;
 
 public class Edit extends JPanel implements ActionListener
@@ -26,17 +30,17 @@ public class Edit extends JPanel implements ActionListener
 	private JEditorPane txtDocument;
 
 	/* Panel Tableau */
-	private JTable table;
-	private JButton btnAjouter;
-	private JButton btnSupprimer;
-	private JButton btnAnnuler;
-	private JButton btnRafraichir;
-	private JButton btnSauvegarde;
-	private DefaultTableModel tableModel;
-	private Appli appli;
+	private JTable             table;
+	private JButton            btnAjouter;
+	private JButton            btnSupprimer;
+	private JButton            btnAnnuler;
+	private JButton            btnRafraichir;
+	private JButton            btnSauvegarde;
+	private DefaultTableModel  tableModel;
+	private Appli              appli;
 
 	/* Panel graphe */
-	private GrapheCopie graphe;
+	private GrapheCopie       graphe;
 	private ArrayList<Sommet> sommets;
 
 	public Edit(Controleur ctrl, Appli appli)
@@ -102,6 +106,9 @@ public class Edit extends JPanel implements ActionListener
 		this.table      = new JTable(this.tableModel);
 		Theme.styleTable(this.table);
 
+		// ── Validation de la colonne Distance (>= 0 uniquement) ─────────────
+		this.table.getColumnModel().getColumn(2).setCellEditor(new DistanceEditor());
+
 		JScrollPane scrollTable = new JScrollPane(this.table);
 		scrollTable.setBorder(Theme.borderInput());
 		scrollTable.getViewport().setBackground(Theme.PANEL);
@@ -128,6 +135,52 @@ public class Edit extends JPanel implements ActionListener
 
 		this.setVisible(false);
 	}
+
+	// ── Éditeur de cellule avec validation distance >= 0 ────────────────────
+	private static class DistanceEditor extends DefaultCellEditor
+	{
+		private static final Color COLOR_OK  = Color.WHITE;
+		private static final Color COLOR_ERR = new Color(255, 200, 200);
+
+		private final JTextField field;
+
+		public DistanceEditor()
+		{
+			super(new JTextField());
+			this.field = (JTextField) getComponent();
+			this.field.setHorizontalAlignment(JTextField.RIGHT);
+		}
+
+		@Override
+		public Component getTableCellEditorComponent(
+				JTable table, Object value,
+				boolean isSelected, int row, int column)
+		{
+			this.field.setBackground(COLOR_OK);
+			return super.getTableCellEditorComponent(table, value, isSelected, row, column);
+		}
+
+		@Override
+		public boolean stopCellEditing()
+		{
+			String texte = field.getText().trim();
+			try
+			{
+				int val = Integer.parseInt(texte);
+				if (val < 0) throw new NumberFormatException();
+			}
+			catch (NumberFormatException e)
+			{
+				field.setBackground(COLOR_ERR);
+				field.selectAll();
+				return false;   // refuse de quitter la cellule
+			}
+			field.setBackground(COLOR_OK);
+			return super.stopCellEditing();
+		}
+	}
+
+	// ────────────────────────────────────────────────────────────────────────
 
 	public void actionPerformed(ActionEvent e)
 	{
@@ -208,16 +261,13 @@ public class Edit extends JPanel implements ActionListener
 			String nomLien   = (String) this.tableModel.getValueAt(i, 1);
 			Object distObj   = this.tableModel.getValueAt(i, 2);
 
-			int distance = 0;
-			if (distObj != null)
+			int distance = parseDistance(distObj);
+
+			// Filet de sécurité : forcer 0 si négatif (ex : import XML corrompu)
+			if (distance < 0)
 			{
-				if (distObj instanceof Integer)
-					distance = (Integer) distObj;
-				else if (distObj instanceof String)
-				{
-					try { distance = Integer.parseInt((String) distObj); }
-					catch (NumberFormatException e) { distance = 0; }
-				}
+				distance = 0;
+				this.tableModel.setValueAt(0, i, 2);
 			}
 
 			Sommet sommet = null;
@@ -241,6 +291,15 @@ public class Edit extends JPanel implements ActionListener
 		this.graphe.actualiser();
 		this.table.revalidate();
 		this.table.repaint();
+	}
+
+	/** Parse la valeur d'une cellule Distance en int (retourne 0 si invalide). */
+	private int parseDistance(Object distObj)
+	{
+		if (distObj == null)         return 0;
+		if (distObj instanceof Integer) return (Integer) distObj;
+		try { return Integer.parseInt(distObj.toString().trim()); }
+		catch (NumberFormatException e) { return 0; }
 	}
 
 	public void sauvegarder()
