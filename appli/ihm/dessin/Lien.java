@@ -8,12 +8,14 @@ public class Lien
 	private Cercle c1;
 	private Cercle c2;
 	private double distance;
+	private boolean enChemin;
 
 	public Lien(Cercle c1, Cercle c2, double distance)
 	{
 		this.c1       = c1;
 		this.c2       = c2;
 		this.distance = distance;
+		this.enChemin = false;
 	}
 
 	public void dessiner(Graphics2D g)
@@ -81,4 +83,6 @@ public class Lien
 
 	public String getSommet()   { return c2.getNom(); }
 	public double getDistance() { return distance;    }
+	public void setEnChemin(boolean b) { this.enChemin = b; }
+	public String getSource() { return c1.getNom(); }
 }

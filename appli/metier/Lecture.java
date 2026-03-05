@@ -18,12 +18,15 @@ public class Lecture
 	private ArrayList<Sommet> sommetsObjet;
 	private String document;
 
+	private BellmanFord bellmanFord;
+
 	public Lecture()
 	{
 		this.sommets      = new ArrayList<>();
 		this.sommetsObjet = new ArrayList<>();
 		this.lien         = "";
 		this.document     = "";
+		this.bellmanFord  = null;
 
 		this.lectureXML();
 	}
@@ -174,17 +177,21 @@ public class Lecture
 	{
 		System.out.println("Mode : " + mode);
 
-
 		if (mode.equals("Bellman-Ford"))
 		{
-			BellmanFord bellmanFord = new BellmanFord(this.sommetsObjet);
+			this.bellmanFord = new BellmanFord(this.sommetsObjet);
+		}
+	}
 
-			ArrayList<String> chemin = bellmanFord.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
-
-			for (String s : chemin)
-			{
-				System.out.println(s);
-			}
+	public ArrayList<String> getCheminCourt()
+	{
+		if (this.bellmanFord != null)
+		{
+			return this.bellmanFord.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
+		}
+		else
+		{
+			return new ArrayList<>();
 		}
 	}
 }

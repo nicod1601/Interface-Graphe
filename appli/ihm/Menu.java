@@ -6,6 +6,7 @@ import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.io.File;
+import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JFileChooser;
@@ -22,6 +23,7 @@ public class Menu extends JPanel implements ActionListener
 	private JMenu    menuMode;
 	private JMenu    menuOptions;
 	private JButton  btnMode;
+	private JButton  btnVoir;
 
 	private Controleur ctrl;
 	private Appli      appli;
@@ -73,6 +75,11 @@ public class Menu extends JPanel implements ActionListener
 		// ── Panel droit : badge de mode ───────────────────────────────────────
 		JPanel panelMode = new JPanel(new FlowLayout(FlowLayout.RIGHT, 8, 0));
 		panelMode.setBackground(Theme.PANEL);
+
+		this.btnVoir = Theme.button("👁 Voir chemin", Theme.ACCENT);
+		this.btnVoir.setEnabled(false);
+		panelMode.add(this.btnVoir);
+		this.btnVoir.addActionListener(this);
 
 		JLabel lblModeLabel = Theme.label("Mode actuel :");
 		lblModeLabel.setForeground(Theme.TEXT_MUTED);
@@ -129,10 +136,15 @@ public class Menu extends JPanel implements ActionListener
 				break;
 			case "2️⃣ Bellman-Ford":
 				this.updateModeBadge("Bellman-Ford", Theme.WARNING);
+				this.btnVoir.setEnabled(true);
 				this.ctrl.Mode("Bellman-Ford");
 				break;
 			case "⚙️ Désactiver":
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
+				break;
+			case "👁 Voir chemin":
+				ArrayList<String> chemin = this.ctrl.getCheminCourt();
+				this.appli.voirChemin(chemin);
 				break;
 		}
 	}

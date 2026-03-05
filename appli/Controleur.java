@@ -41,6 +41,11 @@ public class Controleur
 		this.lecture.Mode(mode);
 	}
 
+	public ArrayList<String> getCheminCourt()
+	{
+		return this.lecture.getCheminCourt();
+	}
+
 	public void sauvegarderXML()
 	{
 		this.lecture.sauvegarderXML();

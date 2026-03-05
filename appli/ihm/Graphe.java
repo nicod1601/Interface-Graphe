@@ -196,4 +196,25 @@ public class Graphe extends JPanel
 		buildGraph();
 		this.actualiser();
 	}
+
+	public void voirChemin(ArrayList<String> chemin)
+	{
+		// Réinitialiser tous les états
+		for (Cercle c : this.sommets) { c.setSelectionne(false); c.setVisite(false); }
+		for (appli.ihm.dessin.Lien l : this.liens) l.setEnChemin(false);
+
+		// Marquer les sommets du chemin
+		for (Cercle c : this.sommets)
+			if (chemin.contains(c.getNom())) c.setSelectionne(true);
+
+		// Marquer les liens du chemin
+		for (int i = 0; i < chemin.size() - 1; i++)
+		{
+			String de = chemin.get(i), vers = chemin.get(i + 1);
+			for (appli.ihm.dessin.Lien l : this.liens)
+				if (l.getSource().equals(de) && l.getSommet().equals(vers))
+					l.setEnChemin(true);
+		}
+		repaint();
+	}
 }

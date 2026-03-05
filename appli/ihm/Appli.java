@@ -84,4 +84,14 @@ public class Appli extends JFrame
 		this.revalidate();
 		this.repaint();
 	}
+
+	public void voirChemin(ArrayList<String> chemin)
+	{
+		if (this.graphe != null)
+		{
+			this.graphe.voirChemin(chemin);
+			this.revalidate();
+			this.repaint();
+		}
+	}
 }
