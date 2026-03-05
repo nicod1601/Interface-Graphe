@@ -160,6 +160,15 @@ public class Lecture
 		else
 			this.sommetsObjet = nouvellesSommets;
 
+		for(Sommet s : this.sommetsObjet)
+		{
+			System.out.println("Sommet : " + s.getNom());
+			for (Lien l : s.getLiens())
+			{
+				System.out.println("  Lien : " + l.getNom() + " (" + l.getDistance() + ")");
+			}
+		}
+
 	}
 
 	public String getDocument()

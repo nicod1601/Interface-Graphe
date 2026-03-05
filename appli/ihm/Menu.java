@@ -141,6 +141,8 @@ public class Menu extends JPanel implements ActionListener
 			case "3️⃣ Désactiver":
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
 				this.btnVoir.setEnabled(false);
+				// Réinitialiser les couleurs du graphe
+				this.appli.voirChemin(new ArrayList<>());
 				break;
 			case "👁 Voir chemin":
 				ArrayList<String> chemin = this.ctrl.getCheminCourt();

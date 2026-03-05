@@ -11,7 +11,9 @@ public class Theme
 	// ── Palette — Dark Graph Theory ───────────────────────────────────────────
 	public static final Color BACKGROUND  = new Color( 22,  28,  42);
 	public static final Color PANEL       = new Color( 30,  38,  56);
-	public static final Color PANEL_ALT   = new Color( 36,  45,  66);
+	public static final Color PANEL_ALT   = new Color( 42,  54,  80);
+	// Fond dédié à l'éditeur de texte — plus clair pour la lisibilité
+	public static final Color EDITOR_BG   = new Color( 26,  34,  52);
 	public static final Color ACCENT      = new Color(  0, 200, 180);
 	public static final Color ACCENT_SOFT = new Color(  0, 200, 180,  25);
 	public static final Color SUCCESS     = new Color( 60, 220, 130);
@@ -196,7 +198,7 @@ public class Theme
 	public static void styleTable(JTable table)
 	{
 		table.setFont(FONT_NORMAL);
-		table.setRowHeight(30);
+		table.setRowHeight(42);
 		table.setShowGrid(false);
 		table.setShowHorizontalLines(true);
 		table.setGridColor(BORDER);
@@ -294,7 +296,7 @@ public class Theme
 		UIManager.put("ScrollBar.track",              BACKGROUND);
 
 		// ── Éditeur ───────────────────────────────────────────────────────────
-		UIManager.put("EditorPane.background",        PANEL_ALT);
+		UIManager.put("EditorPane.background",        EDITOR_BG);
 		UIManager.put("EditorPane.foreground",        TEXT);
 		UIManager.put("EditorPane.caretForeground",   ACCENT);
 		UIManager.put("EditorPane.font",              FONT_MONO);
