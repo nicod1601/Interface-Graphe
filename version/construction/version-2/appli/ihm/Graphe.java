@@ -12,13 +12,9 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import javax.swing.JPanel;
-import java.awt.Color;
 
 public class Graphe extends JPanel
 {
-	// fond dot-grid peint avant le graphe
-	private static final Color DOT_COLOR = new Color(38, 52, 78);
-	private static final int   DOT_STEP  = 22;
 	private Controleur ctrl;
 
 	private ArrayList<Sommet>              sommetsObjet;
@@ -138,19 +134,11 @@ public class Graphe extends JPanel
 	{
 		super.paintComponent(g);
 
+		if (this.sommets.isEmpty()) return;
+
 		Graphics2D g2d = (Graphics2D) g;
 		g2d.setRenderingHint(RenderingHints.KEY_ANTIALIASING,
 							 RenderingHints.VALUE_ANTIALIAS_ON);
-
-		// ── Fond dot-grid ─────────────────────────────────────────────────────
-		g2d.setColor(new Color(10, 13, 20));
-		g2d.fillRect(0, 0, getWidth(), getHeight());
-		g2d.setColor(DOT_COLOR);
-		for (int x = DOT_STEP; x < getWidth(); x += DOT_STEP)
-			for (int y = DOT_STEP; y < getHeight(); y += DOT_STEP)
-				g2d.fillOval(x - 1, y - 1, 2, 2);
-
-		if (this.sommets.isEmpty()) return;
 
 		int rayon  = 20;
 		int margeX = rayon + 10;

@@ -23,38 +23,56 @@ public class Cercle
 	public void dessiner(Graphics2D g)
 	{
 		Graphics2D g2 = (Graphics2D) g.create();
-		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,   RenderingHints.VALUE_ANTIALIAS_ON);
+		g2.setRenderingHint(RenderingHints.KEY_ANTIALIASING,      RenderingHints.VALUE_ANTIALIAS_ON);
 		g2.setRenderingHint(RenderingHints.KEY_TEXT_ANTIALIASING, RenderingHints.VALUE_TEXT_ANTIALIAS_ON);
 
-		Color fill, border, textColor;
+		Color fill, border, textColor, glow;
 
 		if (selectionne)
 		{
-			fill      = new Color(0, 120, 212);
-			border    = new Color(0,  80, 160);
-			textColor = Color.WHITE;
+			// Nœud du chemin : cyan plein lumineux
+			fill      = new Color(  0, 210, 190);
+			border    = new Color(  0, 240, 220);
+			textColor = new Color( 10,  13,  20);
+			glow      = new Color(  0, 210, 190, 90);
 		}
 		else if (visite)
 		{
-			fill      = new Color(0, 120, 212, 30);
-			border    = new Color(0, 120, 212);
-			textColor = new Color(0, 80, 160);
+			// Nœud visité : cyan transparent
+			fill      = new Color(  0, 210, 190,  35);
+			border    = new Color(  0, 210, 190, 180);
+			textColor = new Color(  0, 210, 190);
+			glow      = new Color(  0, 210, 190,  40);
 		}
 		else
 		{
-			fill      = Color.WHITE;
-			border    = new Color(180, 180, 180);
-			textColor = new Color(30, 30, 30);
+			// Nœud normal : fond sombre avec bordure subtile
+			fill      = new Color( 20,  26,  40);
+			border    = new Color( 55,  75, 110);
+			textColor = new Color(180, 200, 225);
+			glow      = null;
 		}
 
+		// ── Halo lumineux derrière le cercle ─────────────────────────────────
+		if (glow != null)
+		{
+			g2.setColor(glow);
+			int glowSize = rayon + 8;
+			g2.fillOval(x - glowSize, y - glowSize, glowSize * 2, glowSize * 2);
+		}
+
+		// ── Corps du cercle ───────────────────────────────────────────────────
 		g2.setColor(fill);
 		g2.fillOval(x - rayon, y - rayon, rayon * 2, rayon * 2);
 
+		// ── Bordure ───────────────────────────────────────────────────────────
 		g2.setColor(border);
-		g2.setStroke(new BasicStroke(1.8f));
+		g2.setStroke(new BasicStroke(selectionne ? 2.2f : 1.4f));
 		g2.drawOval(x - rayon, y - rayon, rayon * 2, rayon * 2);
 
-		Font font = new Font("Segoe UI", Font.BOLD, Math.max(9, rayon - 5));
+		// ── Label ─────────────────────────────────────────────────────────────
+		String fontName = "Consolas";
+		Font font = new Font(fontName, Font.BOLD, Math.max(9, rayon - 5));
 		g2.setFont(font);
 		g2.setColor(textColor);
 		FontMetrics fm = g2.getFontMetrics();

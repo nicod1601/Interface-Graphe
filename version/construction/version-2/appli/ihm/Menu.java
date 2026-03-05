@@ -64,7 +64,7 @@ public class Menu extends JPanel implements ActionListener
 		this.menuMode.add(Theme.menuItem("3️⃣ Désactiver",         Theme.TEXT_MUTED));
 
 		this.menuOptions = Theme.menu("💡 Paramètres");
-		this.menuOptions.add(Theme.menuItem("⚙️ Thème", Theme.ACCENT));
+			this.menuOptions.add(Theme.menuItem("⚙️ Thème", Theme.ACCENT));
 
 		this.menuBar.add(this.menuFichier);
 		this.menuBar.add(this.menuEdition);
@@ -82,9 +82,11 @@ public class Menu extends JPanel implements ActionListener
 		this.btnVoir.addActionListener(this);
 
 		JLabel lblModeLabel = Theme.label("Mode actuel :");
-		panelMode.add(lblModeLabel);
+		lblModeLabel.setForeground(Theme.TEXT_MUTED);
 
 		this.btnMode = Theme.modeBadge("Aucun", Theme.TEXT_MUTED);
+
+		panelMode.add(lblModeLabel);
 		panelMode.add(this.btnMode);
 
 		this.add(panelMenu, BorderLayout.WEST);
@@ -128,29 +130,35 @@ public class Menu extends JPanel implements ActionListener
 			case "✏️ Editer":
 				this.appli.afficher("Edit");
 				break;
-			case "1️⃣ Dijkstra":
-				this.updateModeBadge("Dijkstra", Theme.SUCCESS);
-				this.btnVoir.setEnabled(true);
-				this.ctrl.Mode("Dijkstra");
+			case "⚙️ Dijkstra":
+				this.updateModeBadge("Dijkstra",    Theme.SUCCESS);
+				this.ctrl.Mode("Dijikstra");
 				break;
 			case "2️⃣ Bellman-Ford":
 				this.updateModeBadge("Bellman-Ford", Theme.WARNING);
 				this.btnVoir.setEnabled(true);
 				this.ctrl.Mode("Bellman-Ford");
 				break;
-			case "3️⃣ Désactiver":
+			case "⚙️ Désactiver":
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
 				this.btnVoir.setEnabled(false);
+				this.ctrl.Mode("Aucun");
 				break;
 			case "👁 Voir chemin":
 				ArrayList<String> chemin = this.ctrl.getCheminCourt();
 				this.appli.voirChemin(chemin);
 				break;
+			case "3️⃣ Désactiver":
+			this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
+			this.btnVoir.setEnabled(false);
+			this.appli.voirChemin(new ArrayList<>());
+			break;
 		}
 	}
 
 	public void ouvrirFichier()
 	{
+
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("./appli/donnee"));
 		chooser.setDialogTitle("Sélectionner un fichier de graphe");
@@ -167,10 +175,16 @@ public class Menu extends JPanel implements ActionListener
 		}
 	}
 
-	// Utilise Theme.updateBadgeColor pour éviter de recréer des couleurs alpha
-	// qui causent le bug de superposition avec Metal L&F
 	private void updateModeBadge(String nom, java.awt.Color color)
 	{
-		Theme.updateBadgeColor(this.btnMode, nom, color);
+		this.btnMode.setText(nom);
+		this.btnMode.setForeground(color);
+		this.btnMode.setBackground(new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 18));
+		this.btnMode.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(
+				new java.awt.Color(color.getRed(), color.getGreen(), color.getBlue(), 80), 1, true),
+			BorderFactory.createEmptyBorder(3, 12, 3, 12)
+		));
+		this.btnMode.repaint();
 	}
 }
