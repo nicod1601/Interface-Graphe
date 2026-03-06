@@ -4,7 +4,6 @@ import appli.Controleur;
 import appli.ihm.dessin.Cercle;
 import appli.ihm.dessin.Lien;
 import appli.metier.Sommet;
-import java.awt.Color;
 import java.awt.Graphics;
 import java.awt.Graphics2D;
 import java.awt.RenderingHints;
@@ -14,6 +13,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.Queue;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
 
 public class Graphe extends JPanel
 {
@@ -206,17 +206,36 @@ public class Graphe extends JPanel
 	{
 		for (Cercle c : this.sommets) { c.setSelectionne(false); c.setVisite(false); }
 		for (Lien l : this.liens)       l.setEnChemin(false);
-
-		for (Cercle c : this.sommets)
-			if (chemin.contains(c.getNom())) c.setSelectionne(true);
-
-		for (int i = 0; i < chemin.size() - 1; i++)
-		{
-			String de = chemin.get(i), vers = chemin.get(i + 1);
-			for (Lien l : this.liens)
-				if (l.getSource().equals(de) && l.getSommet().equals(vers))
-					l.setEnChemin(true);
-		}
 		repaint();
+
+		new Thread(() -> {
+			for (int i = 0; i < chemin.size(); i++)
+			{
+				final int index = i;
+				SwingUtilities.invokeLater(() -> {
+					String nomActuel = chemin.get(index);
+					for (Cercle c : this.sommets)
+						if (c.getNom().equals(nomActuel)) c.setSelectionne(true);
+
+					if (index < chemin.size() - 1)
+					{
+						String de = chemin.get(index), vers = chemin.get(index + 1);
+						for (Lien l : this.liens)
+							if (l.getSource().equals(de) && l.getSommet().equals(vers))
+								l.setEnChemin(true);
+					}
+					repaint();
+				});
+
+				try
+				{
+					Thread.sleep(1500);
+				} catch (InterruptedException e)
+				{
+					Thread.currentThread().interrupt();
+					return;
+				}
+			}
+		}).start();
 	}
 }
