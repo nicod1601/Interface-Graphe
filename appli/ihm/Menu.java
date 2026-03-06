@@ -21,7 +21,6 @@ public class Menu extends JPanel implements ActionListener
 	private JMenu    menuFichier;
 	private JMenu    menuEdition;
 	private JMenu    menuMode;
-	private JMenu    menuOptions;
 	private JButton  btnMode;
 	private JButton  btnVoir;
 
@@ -63,13 +62,9 @@ public class Menu extends JPanel implements ActionListener
 		this.menuMode.add(Theme.menuItem("2️⃣ Bellman-Ford",       Theme.WARNING));
 		this.menuMode.add(Theme.menuItem("3️⃣ Désactiver",         Theme.TEXT_MUTED));
 
-		this.menuOptions = Theme.menu("💡 Paramètres");
-		this.menuOptions.add(Theme.menuItem("⚙️ Thème", Theme.ACCENT));
-
 		this.menuBar.add(this.menuFichier);
 		this.menuBar.add(this.menuEdition);
 		this.menuBar.add(this.menuMode);
-		this.menuBar.add(this.menuOptions);
 		panelMenu.add(this.menuBar);
 
 		// ── Panel droit : badge de mode ───────────────────────────────────────
@@ -106,10 +101,6 @@ public class Menu extends JPanel implements ActionListener
 		for (int i = 0; i < this.menuMode.getItemCount(); i++)
 			if (this.menuMode.getItem(i) != null)
 				this.menuMode.getItem(i).addActionListener(this);
-
-		for (int i = 0; i < this.menuOptions.getItemCount(); i++)
-			if (this.menuOptions.getItem(i) != null)
-				this.menuOptions.getItem(i).addActionListener(this);
 	}
 
 	public void actionPerformed(ActionEvent e)
