@@ -33,70 +33,54 @@ public class Lecture
 
 	public void lectureXML()
 	{
-
-		if(this.lien.equals(""))
+		if (this.lien.equals(""))
 		{
 			return;
 		}
-		else
+
+		File file = new File(this.lien);
+
+		try
 		{
-			File file = new File(this.lien);
-			
-			try
-			{
-				DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-				DocumentBuilder        builder = factory.newDocumentBuilder();
-				Document 			   doc     = (Document) builder.parse(file);
+			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builder = factory.newDocumentBuilder();
+			Document doc = builder.parse(file);
 
-				NodeList sommetsNodeList = doc.getElementsByTagName("sommet");
-				
-				for(int cpt = 0; cpt < sommetsNodeList.getLength(); cpt++)
+			NodeList sommetsNodeList = doc.getElementsByTagName("sommet");
+
+			for (int cpt = 0; cpt < sommetsNodeList.getLength(); cpt++)
+			{
+				Element sommetElt = (Element) sommetsNodeList.item(cpt);
+
+				String nom = sommetElt.getAttribute("nom");
+
+				if (!this.sommets.contains(nom))
 				{
-					Element elt = (Element) sommetsNodeList.item(cpt);
-
-					String nom        = elt.getAttribute("nom");
-					String lien       = elt.getAttribute("lien");
-					int distance      = Integer.parseInt(elt.getAttribute("distance"));
-
-					this.document = this.document + nom + " --> " + lien + " " + distance + "\n";
-
-
-					if (this.sommets.contains(nom) == false)
-					{
-						this.sommets.add(nom);
-						this.sommetsObjet.add(new Sommet(nom));
-
-						for (int cpt1 = 0; cpt1 < this.sommets.size(); cpt1++)
-						{
-							if (this.sommets.get(cpt1).equals(nom))
-							{
-
-								this.sommetsObjet.get(cpt1).getLiens().add(new Lien(lien, distance));
-								break;
-							}
-						}
-
-					} 
-					else
-					{
-						for (int cpt2 = 0; cpt2 < this.sommets.size(); cpt2++)
-						{
-							if (this.sommets.get(cpt2).equals(nom))
-							{
-								this.sommetsObjet.get(cpt2).getLiens().add(new Lien(lien, distance));
-							}
-						}
-					}
-
+					this.sommets.add(nom);
+					this.sommetsObjet.add(new Sommet(nom));
 				}
-				
+
+				int index = this.sommets.indexOf(nom);
+
+				NodeList liensNodeList = sommetElt.getElementsByTagName("lien");
+
+				for (int i = 0; i < liensNodeList.getLength(); i++)
+				{
+					Element lienElt = (Element) liensNodeList.item(i);
+
+					String destination = lienElt.getAttribute("destination");
+					int distance = Integer.parseInt(lienElt.getAttribute("distance"));
+
+					this.document = this.document + nom + " --> " + destination + " " + distance + "\n";
+
+					this.sommetsObjet.get(index).getLiens().add(new Lien(destination, distance));
+				}
 			}
-			catch(Exception e)
-			{
-				e.printStackTrace();
-				System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
-				return;
-			}
+		}
+		catch (Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
 		}
 	}
 
@@ -105,7 +89,7 @@ public class Lecture
 		try
 		{
 			File dir = new File("donnee");
-			
+
 			if (!dir.exists())
 			{
 				dir.mkdirs();
@@ -120,13 +104,16 @@ public class Lecture
 
 			for (Sommet sommet : this.sommetsObjet)
 			{
+				Element sommetElt = doc.createElement("sommet");
+				sommetElt.setAttribute("nom", sommet.getNom());
+				root.appendChild(sommetElt);
+
 				for (Lien lien : sommet.getLiens())
 				{
-					Element elt = doc.createElement("sommet");
-					elt.setAttribute("nom", sommet.getNom());
-					elt.setAttribute("lien", lien.getNom());
-					elt.setAttribute("distance", String.valueOf(lien.getDistance()));
-					root.appendChild(elt);
+					Element lienElt = doc.createElement("lien");
+					lienElt.setAttribute("destination", lien.getNom());
+					lienElt.setAttribute("distance", String.valueOf(lien.getDistance()));
+					sommetElt.appendChild(lienElt);
 				}
 			}
 
