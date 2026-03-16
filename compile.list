@@ -1,6 +1,7 @@
 ./appli/metier/Lien.java
 ./appli/metier/Lecture.java
 ./appli/metier/Sommet.java
+./appli/metier/Dijikstra.java
 ./appli/metier/BellmanFord.java
 ./appli/Controleur.java
 ./appli/ihm/Appli.java

@@ -19,7 +19,7 @@ public class Lecture
 	private String document;
 
 	private String modeSelectionne;
-	//private Dijkstra dijkstra;
+	private Dijikstra dijikstra;
 	private BellmanFord bellmanFord;
 
 	public Lecture()
@@ -28,9 +28,9 @@ public class Lecture
 		this.sommetsObjet    = new ArrayList<>();
 		this.lien            = "";
 		this.document        = "";
+		this.dijikstra       = null;
 		this.bellmanFord     = null;
 		this.modeSelectionne = "";
-		//this.dijkstra        = null;
 
 		this.lectureXML();
 	}
@@ -196,32 +196,55 @@ public class Lecture
 	public void Mode(String mode)
 	{
 		System.out.println("Mode : " + mode);
+		System.out.println("DEBUG: Sommets objet = " + this.sommetsObjet);
+		System.out.println("DEBUG: Sommets size = " + (this.sommetsObjet != null ? this.sommetsObjet.size() : 0));
 
 		this.modeSelectionne = mode;
 
-		if (mode.equals("Bellman-Ford"))
+		if (mode.equals("Dijkstra"))
 		{
+			System.out.println("DEBUG: Creating Dijikstra instance...");
+			try {
+				this.dijikstra = new Dijikstra(this.sommetsObjet);
+				System.out.println("DEBUG: Dijikstra initialized successfully");
+			} catch (Exception e) {
+				System.out.println("ERROR: Failed to initialize Dijikstra: " + e.getMessage());
+				e.printStackTrace();
+			}
+		}
+		else if (mode.equals("Bellman-Ford"))
+		{
+			System.out.println("DEBUG: Creating BellmanFord instance...");
 			this.bellmanFord = new BellmanFord(this.sommetsObjet);
+			System.out.println("DEBUG: BellmanFord initialized successfully");
 		}
 	}
 
 	public ArrayList<String> getCheminCourt()
 	{
-		/*if (this.modeSelectionne.equals("Dijkstra") && this.dijkstra != null)
-		{
-			return this.dijkstra.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
-		}
-		else
-		{
+		if (this.sommetsObjet == null || this.sommetsObjet.isEmpty())
 			return new ArrayList<>();
-		}*/
 
-		if (this.modeSelectionne.equals("Bellman-Ford") && this.bellmanFord != null)
+		String destination = this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom();
+
+		if (destination == null || destination.trim().isEmpty())
+			return new ArrayList<>();
+
+		if (this.modeSelectionne.equals("Dijkstra") && this.dijikstra != null)
 		{
-			return this.bellmanFord.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
+			ArrayList<String> chemin = this.dijikstra.getChemin(destination);
+			System.out.println("Dijkstra chemin: " + chemin);
+			return chemin;
+		}
+		else if (this.modeSelectionne.equals("Bellman-Ford") && this.bellmanFord != null)
+		{
+			ArrayList<String> chemin = this.bellmanFord.getChemin(destination);
+			System.out.println("Bellman-Ford chemin: " + chemin);
+			return chemin;
 		}
 		else
 		{
+			System.out.println("Pas d'algorithme sélectionné ou initialisé");
 			return new ArrayList<>();
 		}
 	}

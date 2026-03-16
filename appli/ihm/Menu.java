@@ -124,7 +124,10 @@ public class Menu extends JPanel implements ActionListener {
 				break;
 			case "1️⃣ Dijkstra":
 				this.updateModeBadge("Dijkstra", Theme.SUCCESS);
+				System.out.println("DEBUG: Enabling Dijkstra button");
+				System.out.println("DEBUG: Sommets count: " + this.ctrl.getSommets().size());
 				this.btnVoir.setEnabled(true);
+				System.out.println("DEBUG: Button enabled: " + this.btnVoir.isEnabled());
 				this.ctrl.Mode("Dijkstra");
 				break;
 			case "2️⃣ Bellman-Ford":
@@ -139,7 +142,10 @@ public class Menu extends JPanel implements ActionListener {
 				this.appli.voirChemin(new ArrayList<>());
 				break;
 			case "👁 Voir chemin":
+				System.out.println("DEBUG: 'Voir chemin' button clicked");
 				ArrayList<String> chemin = this.ctrl.getCheminCourt();
+				System.out.println("DEBUG: Path returned: " + chemin);
+				System.out.println("DEBUG: Path size: " + chemin.size());
 				this.appli.voirChemin(chemin);
 				break;
 		}
