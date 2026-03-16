@@ -161,6 +161,17 @@ public class Lecture
 	public void setSommets(ArrayList<Sommet> nouvellesSommets)
 	{
 		this.sommetsObjet = nouvellesSommets;
+
+		System.out.println("Sommets mis à jour :");
+		for (Sommet s : this.sommetsObjet) {
+			System.out.println("  - " + s.getNom());
+			for (Lien l : s.getLiens()) {
+				System.out.println("    - " + l.getNom() + " (" + l.getDistance() + ")");
+			}
+		}
+
+		System.out.println("Sommets mis à jour dans Lecture.");
+		System.out.println("Lien : " + this.lien);
 	}
 
 	public String getDocument()
