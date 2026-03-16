@@ -138,10 +138,4 @@ java -cp bin appli.ihm.Appli
 
 ---
 
-## 🧠 Où trouver les versions antérieures
-
-Les versions historiques sont dans `version/construction/`.
-
----
-
 ✏️ *Ce README est destiné à faciliter la prise en main et à décrire rapidement le fonctionnement du projet.*
