@@ -26,6 +26,7 @@ public class Appli extends JFrame
 		this.setLocationRelativeTo(null);
 		this.setExtendedState(JFrame.MAXIMIZED_BOTH);
 		this.getContentPane().setBackground(Theme.BACKGROUND);
+		
 
 		this.menu   = new Menu(this.ctrl, this);
 		this.edit   = null;
@@ -33,7 +34,7 @@ public class Appli extends JFrame
 
 		this.add(this.menu, BorderLayout.NORTH);
 
-		this.setUndecorated(true);
+		//this.setUndecorated(true);
 		this.setVisible(true);
 	}
 
