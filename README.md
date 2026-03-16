@@ -41,9 +41,32 @@ Les fichiers de graphes sont situés dans `appli/donnee/` ou `bin/appli/donnee/`
 Exemple :
 ```xml
 <graphe>
-  <sommet nom="A" lien="B" distance="5"/>
-  <sommet nom="A" lien="C" distance="10"/>
-  <sommet nom="B" lien="D" distance="3"/>
+
+    <sommet nom="A">
+        <lien destination="B" distance="4"/>
+        <lien destination="C" distance="2"/>
+    </sommet>
+
+    <sommet nom="B">
+        <lien destination="C" distance="5"/>
+        <lien destination="D" distance="10"/>
+    </sommet>
+
+    <sommet nom="C">
+        <lien destination="E" distance="3"/>
+    </sommet>
+
+    <sommet nom="D">
+        <lien destination="F" distance="11"/>
+    </sommet>
+
+    <sommet nom="E">
+        <lien destination="D" distance="4"/>
+    </sommet>
+
+    <sommet nom="F">
+    </sommet>
+
 </graphe>
 ```
 
