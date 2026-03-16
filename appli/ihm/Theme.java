@@ -208,6 +208,12 @@ public class Theme
 		table.setBackground(PANEL);
 		table.setForeground(TEXT);
 
+		// Centrer le texte des cellules
+		javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
+		centerRenderer.setHorizontalAlignment(javax.swing.SwingConstants.CENTER);
+		table.setDefaultRenderer(Object.class, centerRenderer);
+		table.setDefaultRenderer(Number.class, centerRenderer);
+
 		var header = table.getTableHeader();
 		header.setFont(FONT_BOLD);
 		header.setBackground(HEADER_BG);

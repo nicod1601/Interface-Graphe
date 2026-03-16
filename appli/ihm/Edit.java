@@ -199,7 +199,7 @@ public class Edit extends JPanel implements ActionListener
 		lblSrc.setFont(Theme.FONT_BOLD.deriveFont(16f));
 		lblSrc.setForeground(Theme.ACCENT);
 
-		JLabel lblFleche = new JLabel("──▶");
+		JLabel lblFleche = new JLabel("--▶");
 		lblFleche.setFont(Theme.FONT_NORMAL.deriveFont(15f));
 		lblFleche.setForeground(Theme.TEXT_MUTED);
 

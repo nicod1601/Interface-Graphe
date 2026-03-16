@@ -1,116 +1,124 @@
 # Interface-Graphe
 
-Une application graphique Java pour la visualisation et l'analyse de graphes avec implémentation d'algorithmes classiques.
+**Interface-Graphe** est une application desktop Java qui permet de créer, visualiser et analyser des graphes (nœuds/arêtes) à l’aide d’algorithmes classiques de plus court chemin.
 
-## 📋 Description
+---
 
-Interface-Graphe est une application desktop développée en Java qui permet de :
-- Visualiser et manipuler des graphes
-- Implémenter des algorithmes de recherche de plus court chemin
-- Charger/éditer des graphes depuis des fichiers XML
-- Afficher les résultats avec une interface graphique
+## 📌 Présentation du projet
 
-## 🏗️ Architecture du Projet
+L’objectif de ce projet est de proposer une interface simple et responsive pour **créer des graphes**, **modifier leurs arêtes**, et **visualiser les résultats** des algorithmes de plus court chemin.
 
-### Structure des Dossiers
+- Un éditeur de graphe (tableau + vue graphique)
+- Un rendu visuel interactif (sommets, liens, distances)
+- Une gestion de thèmes pour un rendu moderne et lisible
+- Des algorithmes de base (Dijkstra / Bellman-Ford)
+- Un format de fichier XML simple pour enregistrer/charger les graphes
+
+---
+
+## 🚀 Comment ça marche ?
+
+### 1) Lancer l’application
+
+- Sur Windows (recommandé) :
+  ```batch
+  run.bat
+  ```
+
+- En ligne de commande (depuis la racine du projet) :
+  ```bash
+  java -cp bin appli.ihm.Appli
+  ```
+
+
+### 2) Chargez un graphe existant
+
+Les fichiers de graphes sont situés dans `appli/donnee/` ou `bin/appli/donnee/`.
+
+- Le format est XML.
+- Chaque `<sommet>` représente un nœud avec un lien et une distance.
+
+Exemple :
+```xml
+<graphe>
+  <sommet nom="A" lien="B" distance="5"/>
+  <sommet nom="A" lien="C" distance="10"/>
+  <sommet nom="B" lien="D" distance="3"/>
+</graphe>
+```
+
+### 3) Modifier un graphe via l’interface
+
+- Utiliser l’onglet **Édition** pour ajouter/supprimer des lignes (sommets + liens + distances).
+- Les changements se reflètent automatiquement dans le graphe graphique.
+- Le bouton **Appliquer** met à jour la structure interne utilisée par les algorithmes.
+
+### 4) Visualiser le résultat des algorithmes
+
+L’application affiche le graphe et ses arêtes. Les algorithmes de calcul de plus court chemin (Dijkstra / Bellman-Ford) peuvent être lancés via le menu (ou bouton existant selon version).
+
+---
+
+## 🧩 Architecture du projet
 
 ```
 appli/
-├── Controleur.java          # Contrôleur principal de l'application
-├── donnee/                  # Données
-│   └── graphe1.xml         # Fichier de graphe exemple
-├── ihm/                     # Interface Homme-Machine
-│   ├── Appli.java          # Classe principale de l'application
-│   ├── Edit.java           # Éditeur de graphe
-│   ├── Graphe.java         # Gestion de l'affichage du graphe
-│   ├── GrapheCopie.java    # Copie du graphe
+├── Controleur.java          # Coordonne l’IHM et la logique métier
+├── donnee/                  # Fichiers XML de graphes exemples
+├── ihm/                     # Interface graphique (Swing)
+│   ├── Appli.java          # Point d’entrée
+│   ├── Edit.java           # Edition de graphe (tableau + visualisation)
+│   ├── Graphe.java         # Affichage graphique du graphe
+│   ├── GrapheCopie.java    # Copie du graphe pour l’affichage
 │   ├── Menu.java           # Barre de menu
-│   ├── Theme.java          # Gestion des thèmes
-│   └── dessin/             # Composants de dessin
-│       ├── Cercle.java     # Dessin des sommets
-│       └── Lien.java       # Dessin des arêtes
-└── metier/                 # Logique métier
+│   ├── Theme.java          # Thème / styles de l’interface
+│   └── dessin/             # Composants de dessin (sommets/arêtes)
+│       ├── Cercle.java
+│       └── Lien.java
+└── metier/                 # Logique métier / algorithmes
     ├── Dijikstra.java      # Algorithme de Dijkstra
-    ├── BellmanFordMetier.java  # Algorithme de Bellman-Ford
-    ├── Lecture.java        # Lecture des fichiers graphe
-    ├── Lien.java           # Classe modèle pour les arêtes
-    └── Sommet.java         # Classe modèle pour les sommets
+    ├── BellmanFordMetier.java # Algorithme de Bellman-Ford
+    ├── Lecture.java        # Lecture d’un fichier XML en objet
+    ├── Lien.java           # Modèle d’arête
+    └── Sommet.java         # Modèle de nœud
 ```
 
-## 🔧 Installation et Compilation
+---
 
-### Prérequis
-- Java JDK 8 ou supérieur
+## 🛠️ Comment contribuer / développer
 
 ### Compilation
-Windows :
-```batch
-run.bat
-```
 
-Ou manuellement :
-```bash
-javac -cp appli appli/Controleur.java
-javac -cp appli appli/**/*.java
-```
+- Sous Windows :
+  ```batch
+  run.bat
+  ```
 
-## ▶️ Lancement
+- Compilation manuelle (dans racine projet) :
+  ```bash
+  javac -cp appli appli/**/*.java
+  ```
 
-Windows :
-```batch
-run.bat
-```
+### Exécution (après compilation)
 
-Ou directement :
 ```bash
 java -cp bin appli.ihm.Appli
 ```
 
-## 📚 Fonctionnalités
+---
 
-### Algorithmes Implémentés
-- **Dijkstra** : Recherche du plus court chemin (graphes non-orientés)
-- **Bellman-Ford** : Recherche du plus court chemin (graphes avec poids négatifs)
+## 📌 Conseils d’utilisation
 
-### Interface Utilisateur
-- Visualisation graphique des graphes
-- Édition interactive des sommets et arêtes
-- Système de thèmes personnalisables
-- Menu de navigation
-
-## 📁 Format des Données
-
-Les graphes sont stockés au format XML :
-```xml
-<graphe>
-    <sommet nom="A" lien="B" distance="5"/>
-    <sommet nom="A" lien="C" distance="10"/>
-    <sommet nom="B" lien="D" distance="3"/>
-    <sommet nom="C" lien="D" distance="2"/>
-    <sommet nom="D" lien="" distance="0"/>
-</graphe>
-```
-
-## 🔍 Classes Principales
-
-- **Appli.java** : Point d'entrée de l'application
-- **Controleur.java** : Coordonne les interactions entre IHM et métier
-- **Sommet.java** : Modèle pour les nœuds du graphe
-- **Lien.java** : Modèle pour les arêtes du graphe
-- **Dijikstra.java** / **BellmanFordMetier.java** : Implémentations des algorithmes
-
-## 📝 Historique des Versions
-
-Les versions antérieures du projet sont stockées dans le dossier `version/construction/`
-
-## 🐛 Notes
-
-Ce projet est en phase de développement et peut contenir des défauts.
-
-## 👤 Auteur
-
-Projet personnel
+- Pour ajouter un lien, insérer une nouvelle ligne dans le tableau puis cliquer sur **Appliquer**.
+- Pour modifier une distance, éditer la cellule correspondante, puis **Appliquer**.
+- En cas de valeurs invalides (distance négative, cellule vide), l’application remettra la valeur à 0 et affichera l’état dans le tableau.
 
 ---
 
-**Dernière mise à jour** : Février 2026
+## 🧠 Où trouver les versions antérieures
+
+Les versions historiques sont dans `version/construction/`.
+
+---
+
+✏️ *Ce README est destiné à faciliter la prise en main et à décrire rapidement le fonctionnement du projet.*
