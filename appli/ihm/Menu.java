@@ -15,28 +15,25 @@ import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
 
-public class Menu extends JPanel implements ActionListener
-{
+public class Menu extends JPanel implements ActionListener {
 	private JMenuBar menuBar;
-	private JMenu    menuFichier;
-	private JMenu    menuEdition;
-	private JMenu    menuMode;
-	private JButton  btnMode;
-	private JButton  btnVoir;
+	private JMenu menuFichier;
+	private JMenu menuEdition;
+	private JMenu menuMode;
+	private JButton btnMode;
+	private JButton btnVoir;
 
 	private Controleur ctrl;
-	private Appli      appli;
+	private Appli appli;
 
-	public Menu(Controleur ctrl, Appli appli)
-	{
-		this.ctrl  = ctrl;
+	public Menu(Controleur ctrl, Appli appli) {
+		this.ctrl = ctrl;
 		this.appli = appli;
 		this.setLayout(new BorderLayout());
 		this.setBackground(Theme.PANEL);
 		this.setBorder(BorderFactory.createCompoundBorder(
-			BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER),
-			BorderFactory.createEmptyBorder(6, 12, 6, 12)
-		));
+				BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER),
+				BorderFactory.createEmptyBorder(6, 12, 6, 12)));
 
 		// ── Panel gauche : menus ──────────────────────────────────────────────
 		JPanel panelMenu = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
@@ -48,19 +45,19 @@ public class Menu extends JPanel implements ActionListener
 		this.menuBar.setOpaque(true);
 
 		this.menuFichier = Theme.menu("📁 Fichier");
-		this.menuFichier.add(Theme.menuItem("📄 Ouvrir Fichier"  , Theme.ACCENT));
-		this.menuFichier.add(Theme.menuItem("💾 Sauvegarder"     , Theme.SUCCESS));
+		this.menuFichier.add(Theme.menuItem("📄 Ouvrir Fichier", Theme.ACCENT));
+		this.menuFichier.add(Theme.menuItem("💾 Sauvegarder", Theme.SUCCESS));
 		this.menuFichier.add(Theme.menuItem("💾 Enregistrer sous", Theme.SUCCESS));
 		this.menuFichier.addSeparator();
-		this.menuFichier.add(Theme.menuItem("❌ Quitter",        Theme.DANGER));
+		this.menuFichier.add(Theme.menuItem("❌ Quitter", Theme.DANGER));
 
 		this.menuEdition = Theme.menu("✏️ Éditer");
-		this.menuEdition.add(Theme.menuItem("✏️ Editer",         Theme.ACCENT));
+		this.menuEdition.add(Theme.menuItem("✏️ Editer", Theme.ACCENT));
 
 		this.menuMode = Theme.menu("💡 Modes");
-		this.menuMode.add(Theme.menuItem("1️⃣ Dijkstra",           Theme.SUCCESS));
-		this.menuMode.add(Theme.menuItem("2️⃣ Bellman-Ford",       Theme.WARNING));
-		this.menuMode.add(Theme.menuItem("3️⃣ Désactiver",         Theme.TEXT_MUTED));
+		this.menuMode.add(Theme.menuItem("1️⃣ Dijkstra", Theme.SUCCESS));
+		this.menuMode.add(Theme.menuItem("2️⃣ Bellman-Ford", Theme.WARNING));
+		this.menuMode.add(Theme.menuItem("3️⃣ Désactiver", Theme.TEXT_MUTED));
 
 		this.menuBar.add(this.menuFichier);
 		this.menuBar.add(this.menuEdition);
@@ -88,8 +85,7 @@ public class Menu extends JPanel implements ActionListener
 		this.attachMenuListeners();
 	}
 
-	private void attachMenuListeners()
-	{
+	private void attachMenuListeners() {
 		for (int i = 0; i < this.menuFichier.getItemCount(); i++)
 			if (this.menuFichier.getItem(i) != null)
 				this.menuFichier.getItem(i).addActionListener(this);
@@ -103,15 +99,17 @@ public class Menu extends JPanel implements ActionListener
 				this.menuMode.getItem(i).addActionListener(this);
 	}
 
-	public void actionPerformed(ActionEvent e)
-	{
-		switch (e.getActionCommand())
-		{
+	public void actionPerformed(ActionEvent e) {
+		switch (e.getActionCommand()) {
 			case "📄 Ouvrir Fichier":
 				this.ouvrirFichier();
 				break;
-			case "💾 Enregistrer":
+			case "💾 Enregistrer sous":
+				System.out.println("Fonctionnalité d'enregistrement non implémentée.");
+				break;
+			case "💾 Sauvegarder":
 				this.ctrl.sauvegarderXML();
+				System.out.println("sauvegardé");
 				break;
 			case "❌ Quitter":
 				System.exit(0);
@@ -142,16 +140,14 @@ public class Menu extends JPanel implements ActionListener
 		}
 	}
 
-	public void ouvrirFichier()
-	{
+	public void ouvrirFichier() {
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("./appli/donnee"));
 		chooser.setDialogTitle("Sélectionner un fichier de graphe");
 		chooser.setApproveButtonText("Ouvrir");
 		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
 
-		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION)
-		{
+		if (chooser.showOpenDialog(this) == JFileChooser.APPROVE_OPTION) {
 			String nomFichier = "" + chooser.getSelectedFile();
 			this.ctrl.getSommets().clear();
 			this.ctrl.setLiens(nomFichier);
@@ -162,8 +158,7 @@ public class Menu extends JPanel implements ActionListener
 
 	// Utilise Theme.updateBadgeColor pour éviter de recréer des couleurs alpha
 	// qui causent le bug de superposition avec Metal L&F
-	private void updateModeBadge(String nom, java.awt.Color color)
-	{
+	private void updateModeBadge(String nom, java.awt.Color color) {
 		Theme.updateBadgeColor(this.btnMode, nom, color);
 	}
 }

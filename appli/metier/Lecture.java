@@ -18,15 +18,19 @@ public class Lecture
 	private ArrayList<Sommet> sommetsObjet;
 	private String document;
 
+	private String modeSelectionne;
+	//private Dijkstra dijkstra;
 	private BellmanFord bellmanFord;
 
 	public Lecture()
 	{
-		this.sommets      = new ArrayList<>();
-		this.sommetsObjet = new ArrayList<>();
-		this.lien         = "";
-		this.document     = "";
-		this.bellmanFord  = null;
+		this.sommets         = new ArrayList<>();
+		this.sommetsObjet    = new ArrayList<>();
+		this.lien            = "";
+		this.document        = "";
+		this.bellmanFord     = null;
+		this.modeSelectionne = "";
+		//this.dijkstra        = null;
 
 		this.lectureXML();
 	}
@@ -88,11 +92,12 @@ public class Lecture
 	{
 		try
 		{
-			File dir = new File("donnee");
+			File dir = new File(this.lien);
 
-			if (!dir.exists())
+			File dossier = dir.getParentFile();
+			if (dossier != null && !dossier.exists())
 			{
-				dir.mkdirs();
+				dossier.mkdirs();
 			}
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
@@ -125,6 +130,19 @@ public class Lecture
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
 
 			transformer.transform(new DOMSource(doc), new StreamResult(new File(this.lien)));
+
+
+			//information
+			System.out.println("Fichier XML sauvegardé avec succès : " + this.lien);
+			System.out.println("Contenu du graphe :");
+			for (Sommet s : this.sommetsObjet)
+			{
+				System.out.println("Sommet : " + s.getNom());
+				for (Lien l : s.getLiens())
+				{
+					System.out.println("  Lien : " + l.getNom() + " (" + l.getDistance() + ")");
+				}
+			}
 		}
 		catch (Exception ex)
 		{
@@ -142,20 +160,7 @@ public class Lecture
 
 	public void setSommets(ArrayList<Sommet> nouvellesSommets)
 	{
-		if (nouvellesSommets == null)
-			this.sommetsObjet = new ArrayList<>();
-		else
-			this.sommetsObjet = nouvellesSommets;
-
-		for(Sommet s : this.sommetsObjet)
-		{
-			System.out.println("Sommet : " + s.getNom());
-			for (Lien l : s.getLiens())
-			{
-				System.out.println("  Lien : " + l.getNom() + " (" + l.getDistance() + ")");
-			}
-		}
-
+		this.sommetsObjet = nouvellesSommets;
 	}
 
 	public String getDocument()
@@ -166,12 +171,17 @@ public class Lecture
 	public void setLien(String lien)
 	{
 		this.lien = lien;
+		this.sommets.clear();
+		this.sommetsObjet.clear();
+		this.document = "";
 		this.lectureXML();
 	}
 
 	public void Mode(String mode)
 	{
 		System.out.println("Mode : " + mode);
+
+		this.modeSelectionne = mode;
 
 		if (mode.equals("Bellman-Ford"))
 		{
@@ -181,7 +191,16 @@ public class Lecture
 
 	public ArrayList<String> getCheminCourt()
 	{
-		if (this.bellmanFord != null)
+		/*if (this.modeSelectionne.equals("Dijkstra") && this.dijkstra != null)
+		{
+			return this.dijkstra.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
+		}
+		else
+		{
+			return new ArrayList<>();
+		}*/
+
+		if (this.modeSelectionne.equals("Bellman-Ford") && this.bellmanFord != null)
 		{
 			return this.bellmanFord.getChemin(this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom());
 		}

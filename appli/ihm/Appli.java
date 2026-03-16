@@ -57,7 +57,7 @@ public class Appli extends JFrame
 				break;
 
 			case "Annuler":
-			case "Sauvegarder":
+			case "Appliquer":
 				if (this.edit   != null) { this.edit.setVisible(false);   this.remove(this.edit);   }
 				if (this.graphe != null) { this.remove(this.graphe); }
 				this.graphe = new Graphe(this.ctrl);
@@ -77,7 +77,7 @@ public class Appli extends JFrame
 		this.repaint();
 	}
 
-	public void sauvegarder(ArrayList<Sommet> liste)
+	public void appliquer(ArrayList<Sommet> liste)
 	{
 		if (this.ctrl   != null) this.ctrl.setSommets(liste);
 		if (this.graphe != null) this.graphe.sauvegarder(liste);

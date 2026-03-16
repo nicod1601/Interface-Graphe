@@ -9,5 +9,5 @@ copy /Y logo.png bin\logo.png
 copy /Y Graphe.ico bin\Graphe.ico
 
 cd bin
-start javaw appli.Controleur
+start java appli.Controleur
 cd ..

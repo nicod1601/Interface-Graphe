@@ -39,7 +39,7 @@ public class Edit extends JPanel implements ActionListener
 	private JButton           btnSupprimer;
 	private JButton           btnAnnuler;
 	private JButton           btnRafraichir;
-	private JButton           btnSauvegarde;
+	private JButton           btnAppliquer;
 	private DefaultTableModel tableModel;
 	private Appli             appli;
 
@@ -95,11 +95,11 @@ public class Edit extends JPanel implements ActionListener
 		this.btnAnnuler    = Theme.button("↩️ Annuler",    Theme.TEXT_MUTED);
 		this.btnSupprimer  = Theme.button("➖ Supprimer",  Theme.DANGER);
 		this.btnAjouter    = Theme.button("➕ Ajouter",    Theme.SUCCESS);
-		this.btnSauvegarde = Theme.button("✅ Sauvegarder",Theme.SUCCESS);
+		this.btnAppliquer = Theme.button("✅ Appliquer",Theme.SUCCESS);
 
 		panelBtn.add(this.btnRafraichir);
 		panelBtn.add(this.btnAnnuler);
-		panelBtn.add(this.btnSauvegarde);
+		panelBtn.add(this.btnAppliquer);
 		panelBtn.add(this.btnSupprimer);
 		panelBtn.add(this.btnAjouter);
 
@@ -150,7 +150,7 @@ public class Edit extends JPanel implements ActionListener
 		this.btnSupprimer.addActionListener(this);
 		this.btnAnnuler.addActionListener(this);
 		this.btnRafraichir.addActionListener(this);
-		this.btnSauvegarde.addActionListener(this);
+		this.btnAppliquer.addActionListener(this);
 
 		this.setVisible(false);
 	}
@@ -278,7 +278,7 @@ public class Edit extends JPanel implements ActionListener
 			                      this.rafraichir();                 break;
 			case "↩️ Annuler":   this.appli.afficher("Annuler");    break;
 			case "🔄 Rafraîchir": this.rafraichir();                 break;
-			case "✅ Sauvegarder": this.sauvegarder();               break;
+			case "✅ Appliquer": this.appliquer();               break;
 		}
 	}
 
@@ -360,10 +360,10 @@ public class Edit extends JPanel implements ActionListener
 		catch (NumberFormatException e) { return 0; }
 	}
 
-	public void sauvegarder()
+	public void appliquer()
 	{
-		this.appli.sauvegarder(this.sommets);
-		this.appli.afficher("Sauvegarder");
+		this.appli.appliquer(this.sommets);
+		this.appli.afficher("Appliquer");
 	}
 
 	public ArrayList<Sommet> getSommets() { return this.sommets; }
