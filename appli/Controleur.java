@@ -51,6 +51,11 @@ public class Controleur
 		this.lecture.sauvegarderXML();
 	}
 
+	public void setLienSeulement(String lien)
+	{
+		this.lecture.setLienSeulement(lien);
+	}
+
 	public static void main(String[] args) 
 	{
 		new Controleur();

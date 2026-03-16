@@ -23,5 +23,8 @@
     <sommet nom="V">
         <lien destination="M" distance="4"/>
     </sommet>
-    <sommet nom="M"/>
+    <sommet nom="M">
+        <lien destination="X" distance="7"/>
+    </sommet>
+    <sommet nom="X"/>
 </graphe>

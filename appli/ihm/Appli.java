@@ -32,6 +32,8 @@ public class Appli extends JFrame
 		this.graphe = null;
 
 		this.add(this.menu, BorderLayout.NORTH);
+
+		this.setUndecorated(true);
 		this.setVisible(true);
 	}
 

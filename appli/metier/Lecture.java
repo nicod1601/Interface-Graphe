@@ -179,6 +179,11 @@ public class Lecture
 		return document;
 	}
 
+	public void setLienSeulement(String lien)
+	{
+		this.lien = lien;
+	}
+
 	public void setLien(String lien)
 	{
 		this.lien = lien;

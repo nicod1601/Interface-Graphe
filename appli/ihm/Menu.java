@@ -9,11 +9,15 @@ import java.io.File;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
+import javax.swing.JDialog;
 import javax.swing.JFileChooser;
+import javax.swing.JFrame;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
+import javax.swing.SwingUtilities;
+import javax.swing.Timer;
 
 public class Menu extends JPanel implements ActionListener {
 	private JMenuBar menuBar;
@@ -32,7 +36,7 @@ public class Menu extends JPanel implements ActionListener {
 		this.setLayout(new BorderLayout());
 		this.setBackground(Theme.PANEL);
 		this.setBorder(BorderFactory.createCompoundBorder(
-				BorderFactory.createMatteBorder(0, 0, 1, 0, Theme.BORDER),
+				BorderFactory.createMatteBorder(0, 0, 0, 0, Theme.BORDER),
 				BorderFactory.createEmptyBorder(6, 12, 6, 12)));
 
 		// ── Panel gauche : menus ──────────────────────────────────────────────
@@ -105,11 +109,12 @@ public class Menu extends JPanel implements ActionListener {
 				this.ouvrirFichier();
 				break;
 			case "💾 Enregistrer sous":
-				System.out.println("Fonctionnalité d'enregistrement non implémentée.");
+				this.enregistrerSous();
+				this.afficherToast("✅ Fichier enregistré sous ");
 				break;
 			case "💾 Sauvegarder":
 				this.ctrl.sauvegarderXML();
-				System.out.println("sauvegardé");
+				this.afficherToast("✅ Fichier sauvegardé !");
 				break;
 			case "❌ Quitter":
 				System.exit(0);
@@ -140,7 +145,8 @@ public class Menu extends JPanel implements ActionListener {
 		}
 	}
 
-	public void ouvrirFichier() {
+	public void ouvrirFichier()
+	{
 		JFileChooser chooser = new JFileChooser();
 		chooser.setCurrentDirectory(new File("./appli/donnee"));
 		chooser.setDialogTitle("Sélectionner un fichier de graphe");
@@ -155,6 +161,67 @@ public class Menu extends JPanel implements ActionListener {
 			this.appli.fichier();
 		}
 	}
+
+
+	public void enregistrerSous()
+	{
+		JFileChooser chooser = new JFileChooser();
+		chooser.setCurrentDirectory(new File("./appli/donnee"));
+		chooser.setDialogTitle("Enregistrer sous...");
+		chooser.setApproveButtonText("Enregistrer");
+		chooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+
+		if (chooser.showSaveDialog(this) == JFileChooser.APPROVE_OPTION)
+		{
+			String chemin = chooser.getSelectedFile().getAbsolutePath();
+
+			if (!chemin.toLowerCase().endsWith(".xml"))
+			{
+				chemin += ".xml";
+			}
+
+			this.ctrl.setLienSeulement(chemin);
+			this.ctrl.sauvegarderXML();
+			System.out.println("Enregistré sous : " + chemin);
+		}
+	}
+
+
+	private void afficherToast(String message)
+	{
+		JDialog toast = new JDialog((JFrame) SwingUtilities.getWindowAncestor(this));
+		toast.setUndecorated(true);
+		toast.setSize(280, 50);
+		toast.setAlwaysOnTop(true);
+
+		// Position en bas à droite de la frame
+		JFrame frame = (JFrame) SwingUtilities.getWindowAncestor(this);
+		int x = frame.getX() + frame.getWidth()  - 300;
+		int y = frame.getY() + frame.getHeight() - 80;
+		toast.setLocation(x, y);
+
+		JPanel panel = new JPanel(new BorderLayout());
+		panel.setBackground(Theme.PANEL);
+		panel.setBorder(BorderFactory.createCompoundBorder(
+			BorderFactory.createLineBorder(Theme.ACCENT, 1),
+			BorderFactory.createEmptyBorder(10, 16, 10, 16)
+		));
+
+		JLabel label = new JLabel(message);
+		label.setFont(Theme.FONT_BOLD);
+		label.setForeground(Theme.ACCENT);
+		panel.add(label, BorderLayout.CENTER);
+
+		toast.setContentPane(panel);
+		toast.setVisible(true);
+
+		// Disparait après 2 secondes
+		Timer timer = new Timer(2000, e -> toast.dispose());
+		timer.setRepeats(false);
+		timer.start();
+	}
+
+	
 
 	// Utilise Theme.updateBadgeColor pour éviter de recréer des couleurs alpha
 	// qui causent le bug de superposition avec Metal L&F
