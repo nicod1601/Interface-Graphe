@@ -11,17 +11,48 @@ import javax.xml.transform.dom.DOMSource;
 import javax.xml.transform.stream.StreamResult;
 import org.w3c.dom.*;
 
+/**
+ * Couche modèle de l'application (pattern MVC).
+ * <p>
+ * Responsabilités :
+ * <ul>
+ *   <li>Lecture et écriture du graphe au format XML.</li>
+ *   <li>Stockage de la liste des sommets ({@link Sommet}) et de leurs liens ({@link Lien}).</li>
+ *   <li>Instanciation et délégation aux algorithmes {@link Dijikstra} et {@link BellmanFord}.</li>
+ *   <li>Calcul et restitution du plus court chemin selon l'algorithme actif.</li>
+ * </ul>
+ *
+ * @author Nicolas D. & Marta AN.
+ */
 public class Lecture
 {
+	/** Chemin vers le fichier XML courant (lecture et sauvegarde). */
 	private String lien;
+
+	/** Noms des sommets déjà chargés (anti-doublons lors du parsing). */
 	private ArrayList<String> sommets;
+
+	/** Objets sommets avec leurs listes de liens. */
 	private ArrayList<Sommet> sommetsObjet;
+
+	/** Représentation textuelle du graphe chargé (ex. "A --> B 5\n"). */
 	private String document;
 
+	/** Algorithme actif : {@code "Dijkstra"}, {@code "Bellman-Ford"} ou chaîne vide. */
 	private String modeSelectionne;
+
+	/** Instance de Dijkstra (null si le mode n'est pas actif). */
 	private Dijikstra dijikstra;
+
+	/** Instance de Bellman-Ford (null si le mode n'est pas actif). */
 	private BellmanFord bellmanFord;
 
+	// ── Constructeur ──────────────────────────────────────────────────────────
+
+	/**
+	 * Initialise le modèle avec des collections vides.
+	 * Appelle {@link #lectureXML()} qui ne fait rien si {@link #lien} est vide.
+	 */
 	public Lecture()
 	{
 		this.sommets         = new ArrayList<>();
@@ -31,33 +62,42 @@ public class Lecture
 		this.dijikstra       = null;
 		this.bellmanFord     = null;
 		this.modeSelectionne = "";
-
-		this.lectureXML();
+		lectureXML();
 	}
 
+	// ── Lecture XML ───────────────────────────────────────────────────────────
+
+	/**
+	 * Parse le fichier XML pointé par {@link #lien} et remplit {@link #sommetsObjet}.
+	 * <p>
+	 * Format attendu :
+	 * <pre>
+	 * &lt;graphe&gt;
+	 *   &lt;sommet nom="A"&gt;
+	 *     &lt;lien destination="B" distance="5"/&gt;
+	 *   &lt;/sommet&gt;
+	 * &lt;/graphe&gt;
+	 * </pre>
+	 * Sans effet si {@link #lien} est vide.
+	 */
 	public void lectureXML()
 	{
-		if (this.lien.equals(""))
-		{
-			return;
-		}
-
-		File file = new File(this.lien);
+		if (this.lien.isEmpty()) return;
 
 		try
 		{
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.parse(file);
+			DocumentBuilder        builder = factory.newDocumentBuilder();
+			Document               doc     = builder.parse(new File(this.lien));
 
-			NodeList sommetsNodeList = doc.getElementsByTagName("sommet");
+			NodeList noeuds = doc.getElementsByTagName("sommet");
 
-			for (int cpt = 0; cpt < sommetsNodeList.getLength(); cpt++)
+			for (int i = 0; i < noeuds.getLength(); i++)
 			{
-				Element sommetElt = (Element) sommetsNodeList.item(cpt);
+				Element sommetElt = (Element) noeuds.item(i);
+				String  nom       = sommetElt.getAttribute("nom");
 
-				String nom = sommetElt.getAttribute("nom");
-
+				// Éviter les doublons de sommets
 				if (!this.sommets.contains(nom))
 				{
 					this.sommets.add(nom);
@@ -67,15 +107,14 @@ public class Lecture
 				int index = this.sommets.indexOf(nom);
 
 				NodeList liensNodeList = sommetElt.getElementsByTagName("lien");
-
-				for (int i = 0; i < liensNodeList.getLength(); i++)
+				for (int j = 0; j < liensNodeList.getLength(); j++)
 				{
-					Element lienElt = (Element) liensNodeList.item(i);
+					Element lienElt     = (Element) liensNodeList.item(j);
+					String  destination = lienElt.getAttribute("destination");
+					int     distance    = Integer.parseInt(lienElt.getAttribute("distance"));
 
-					String destination = lienElt.getAttribute("destination");
-					int distance = Integer.parseInt(lienElt.getAttribute("distance"));
-
-					this.document = this.document + nom + " --> " + destination + " " + distance + "\n";
+					// Mise à jour de la représentation textuelle
+					this.document += nom + " --> " + destination + " " + distance + "\n";
 
 					this.sommetsObjet.get(index).getLiens().add(new Lien(destination, distance));
 				}
@@ -84,25 +123,29 @@ public class Lecture
 		catch (Exception e)
 		{
 			e.printStackTrace();
-			System.out.println("Erreur lors de la lecture du fichier XML : " + e.getMessage());
+			System.err.println("Erreur lors de la lecture XML : " + e.getMessage());
 		}
 	}
 
+	// ── Sauvegarde XML ────────────────────────────────────────────────────────
+
+	/**
+	 * Sauvegarde {@link #sommetsObjet} dans le fichier pointé par {@link #lien}.
+	 * Crée les dossiers intermédiaires si nécessaire.
+	 * <p>
+	 * Le fichier est écrit avec une indentation de 4 espaces et l'encodage UTF-8.
+	 */
 	public void sauvegarderXML()
 	{
 		try
 		{
-			File dir = new File(this.lien);
-
-			File dossier = dir.getParentFile();
-			if (dossier != null && !dossier.exists())
-			{
-				dossier.mkdirs();
-			}
+			File fichier = new File(this.lien);
+			File dossier = fichier.getParentFile();
+			if (dossier != null && !dossier.exists()) dossier.mkdirs();
 
 			DocumentBuilderFactory factory = DocumentBuilderFactory.newInstance();
-			DocumentBuilder builder = factory.newDocumentBuilder();
-			Document doc = builder.newDocument();
+			DocumentBuilder        builder = factory.newDocumentBuilder();
+			Document               doc     = builder.newDocument();
 
 			Element root = doc.createElement("graphe");
 			doc.appendChild(root);
@@ -117,62 +160,35 @@ public class Lecture
 				{
 					Element lienElt = doc.createElement("lien");
 					lienElt.setAttribute("destination", lien.getNom());
-					lienElt.setAttribute("distance", String.valueOf(lien.getDistance()));
+					lienElt.setAttribute("distance",    String.valueOf(lien.getDistance()));
 					sommetElt.appendChild(lienElt);
 				}
 			}
 
-			// Écriture formatée
-			TransformerFactory tf = TransformerFactory.newInstance();
-			Transformer transformer = tf.newTransformer();
-			transformer.setOutputProperty(OutputKeys.INDENT, "yes");
+			// Écriture formatée (indentation 4 espaces, UTF-8)
+			Transformer transformer = TransformerFactory.newInstance().newTransformer();
+			transformer.setOutputProperty(OutputKeys.INDENT,   "yes");
 			transformer.setOutputProperty("{http://xml.apache.org/xslt}indent-amount", "4");
 			transformer.setOutputProperty(OutputKeys.ENCODING, "UTF-8");
-
-			transformer.transform(new DOMSource(doc), new StreamResult(new File(this.lien)));
-
+			transformer.transform(new DOMSource(doc), new StreamResult(fichier));
 		}
-		catch (Exception ex)
+		catch (Exception e)
 		{
-			System.err.println("Erreur lors de la sauvegarde du fichier XML : " + ex.getMessage());
-			ex.printStackTrace();
-			return;
+			System.err.println("Erreur lors de la sauvegarde XML : " + e.getMessage());
+			e.printStackTrace();
 		}
 	}
 
+	// ── Algorithmes ───────────────────────────────────────────────────────────
 
-	public ArrayList<Sommet> getSommets()
-	{
-		return sommetsObjet;
-	}
-
-	public void setSommets(ArrayList<Sommet> nouvellesSommets)
-	{
-		this.sommetsObjet = nouvellesSommets;
-	}
-
-	public String getDocument()
-	{
-		return document;
-	}
-
-	public void setLienSeulement(String lien)
-	{
-		this.lien = lien;
-	}
-
-	public void setLien(String lien)
-	{
-		this.lien = lien;
-		this.sommets.clear();
-		this.sommetsObjet.clear();
-		this.document = "";
-		this.lectureXML();
-	}
-
+	/**
+	 * Active l'algorithme de chemin court demandé et lance le calcul.
+	 * L'algorithme précédemment actif est remplacé.
+	 *
+	 * @param mode {@code "Dijkstra"} ou {@code "Bellman-Ford"}.
+	 */
 	public void Mode(String mode)
 	{
-
 		this.modeSelectionne = mode;
 
 		if (mode.equals("Dijkstra"))
@@ -180,7 +196,9 @@ public class Lecture
 			try
 			{
 				this.dijikstra = new Dijikstra(this.sommetsObjet);
-			} catch (Exception e) {
+			}
+			catch (Exception e)
+			{
 				e.printStackTrace();
 			}
 		}
@@ -190,29 +208,85 @@ public class Lecture
 		}
 	}
 
+	/**
+	 * Retourne le plus court chemin calculé par l'algorithme actif,
+	 * du premier sommet au dernier sommet de la liste.
+	 *
+	 * @return Liste ordonnée des noms de sommets (source → destination),
+	 *         ou liste vide si aucun algorithme actif, liste vide ou destination invalide.
+	 */
 	public ArrayList<String> getCheminCourt()
 	{
 		if (this.sommetsObjet == null || this.sommetsObjet.isEmpty())
 			return new ArrayList<>();
 
 		String destination = this.sommetsObjet.get(this.sommetsObjet.size() - 1).getNom();
-
 		if (destination == null || destination.trim().isEmpty())
 			return new ArrayList<>();
 
 		if (this.modeSelectionne.equals("Dijkstra") && this.dijikstra != null)
-		{
-			ArrayList<String> chemin = this.dijikstra.getChemin(destination);
-			return chemin;
-		}
-		else if (this.modeSelectionne.equals("Bellman-Ford") && this.bellmanFord != null)
-		{
-			ArrayList<String> chemin = this.bellmanFord.getChemin(destination);
-			return chemin;
-		}
-		else
-		{
-			return new ArrayList<>();
-		}
+			return this.dijikstra.getChemin(destination);
+
+		if (this.modeSelectionne.equals("Bellman-Ford") && this.bellmanFord != null)
+			return this.bellmanFord.getChemin(destination);
+
+		return new ArrayList<>();
+	}
+
+	// ── Accesseurs ────────────────────────────────────────────────────────────
+
+	/**
+	 * Retourne la liste des sommets chargés.
+	 *
+	 * @return Liste des sommets.
+	 */
+	public ArrayList<Sommet> getSommets()
+	{
+		return this.sommetsObjet;
+	}
+
+	/**
+	 * Remplace la liste des sommets (utilisé après une édition manuelle).
+	 *
+	 * @param nouvellesSommets Nouvelle liste à utiliser.
+	 */
+	public void setSommets(ArrayList<Sommet> nouvellesSommets)
+	{
+		this.sommetsObjet = nouvellesSommets;
+	}
+
+	/**
+	 * Retourne la représentation textuelle du graphe chargé.
+	 *
+	 * @return Chaîne « A --> B 5\n... ».
+	 */
+	public String getDocument()
+	{
+		return this.document;
+	}
+
+	/**
+	 * Charge un nouveau fichier XML : vide les données actuelles puis relit le fichier.
+	 *
+	 * @param lien Chemin vers le fichier XML.
+	 */
+	public void setLien(String lien)
+	{
+		this.lien = lien;
+		this.sommets.clear();
+		this.sommetsObjet.clear();
+		this.document = "";
+		lectureXML();
+	}
+
+	/**
+	 * Change le chemin du fichier de sauvegarde <b>sans</b> recharger les données.
+	 * Utilisé pour « Enregistrer sous ».
+	 *
+	 * @param lien Nouveau chemin de fichier.
+	 */
+	public void setLienSeulement(String lien)
+	{
+		this.lien = lien;
 	}
 }

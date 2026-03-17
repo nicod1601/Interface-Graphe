@@ -154,6 +154,7 @@ public class Menu extends JPanel implements ActionListener
 				this.updateModeBadge("Bellman-Ford", Theme.WARNING);
 				this.btnVoir.setEnabled(true);
 				this.ctrl.Mode("Bellman-Ford");
+				this.appli.afficherTabMods();
 				break;
 			case "3️⃣ Désactiver":
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
