@@ -121,6 +121,18 @@ public class Appli extends JFrame
 		}
 	}
 
+	public void desactiverTabDistance()
+	{
+		if (this.tabDistance != null)
+		{
+			this.tabDistance.setVisible(false);
+			this.remove(this.tabDistance);
+			this.tabDistance = null;
+			this.revalidate();
+			this.repaint();
+		}
+	}
+
 	public void afficherTabMods()
 	{
 		if (this.tabDistance != null) { this.tabDistance.setVisible(false);   this.remove(this.tabDistance);   }

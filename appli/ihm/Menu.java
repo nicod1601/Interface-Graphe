@@ -159,6 +159,7 @@ public class Menu extends JPanel implements ActionListener
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
 				this.btnVoir.setEnabled(false);
 				this.appli.voirChemin(new ArrayList<>());
+				this.appli.desactiverTabDistance();
 				break;
 			case "👁 Voir chemin":
 				System.out.println("DEBUG: 'Voir chemin' button clicked");
