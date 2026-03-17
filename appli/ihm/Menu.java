@@ -19,7 +19,8 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
-public class Menu extends JPanel implements ActionListener {
+public class Menu extends JPanel implements ActionListener
+{
 	private JMenuBar menuBar;
 	private JMenu menuFichier;
 	private JMenu menuEdition;
@@ -30,7 +31,8 @@ public class Menu extends JPanel implements ActionListener {
 	private Controleur ctrl;
 	private Appli appli;
 
-	public Menu(Controleur ctrl, Appli appli) {
+	public Menu(Controleur ctrl, Appli appli)
+	{
 		this.ctrl = ctrl;
 		this.appli = appli;
 		this.setLayout(new BorderLayout());
@@ -89,7 +91,8 @@ public class Menu extends JPanel implements ActionListener {
 		this.attachMenuListeners();
 	}
 
-	private void attachMenuListeners() {
+	private void attachMenuListeners()
+	{
 		for (int i = 0; i < this.menuFichier.getItemCount(); i++)
 			if (this.menuFichier.getItem(i) != null)
 				this.menuFichier.getItem(i).addActionListener(this);
@@ -103,7 +106,8 @@ public class Menu extends JPanel implements ActionListener {
 				this.menuMode.getItem(i).addActionListener(this);
 	}
 
-	public void actionPerformed(ActionEvent e) {
+	public void actionPerformed(ActionEvent e)
+	{
 		switch (e.getActionCommand()) {
 			case "📄 Ouvrir Fichier":
 				this.ouvrirFichier();
@@ -124,10 +128,7 @@ public class Menu extends JPanel implements ActionListener {
 				break;
 			case "1️⃣ Dijkstra":
 				this.updateModeBadge("Dijkstra", Theme.SUCCESS);
-				System.out.println("DEBUG: Enabling Dijkstra button");
-				System.out.println("DEBUG: Sommets count: " + this.ctrl.getSommets().size());
 				this.btnVoir.setEnabled(true);
-				System.out.println("DEBUG: Button enabled: " + this.btnVoir.isEnabled());
 				this.ctrl.Mode("Dijkstra");
 				break;
 			case "2️⃣ Bellman-Ford":

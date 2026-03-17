@@ -131,18 +131,6 @@ public class Lecture
 
 			transformer.transform(new DOMSource(doc), new StreamResult(new File(this.lien)));
 
-
-			//information
-			System.out.println("Fichier XML sauvegardé avec succès : " + this.lien);
-			System.out.println("Contenu du graphe :");
-			for (Sommet s : this.sommetsObjet)
-			{
-				System.out.println("Sommet : " + s.getNom());
-				for (Lien l : s.getLiens())
-				{
-					System.out.println("  Lien : " + l.getNom() + " (" + l.getDistance() + ")");
-				}
-			}
 		}
 		catch (Exception ex)
 		{
@@ -161,17 +149,6 @@ public class Lecture
 	public void setSommets(ArrayList<Sommet> nouvellesSommets)
 	{
 		this.sommetsObjet = nouvellesSommets;
-
-		System.out.println("Sommets mis à jour :");
-		for (Sommet s : this.sommetsObjet) {
-			System.out.println("  - " + s.getNom());
-			for (Lien l : s.getLiens()) {
-				System.out.println("    - " + l.getNom() + " (" + l.getDistance() + ")");
-			}
-		}
-
-		System.out.println("Sommets mis à jour dans Lecture.");
-		System.out.println("Lien : " + this.lien);
 	}
 
 	public String getDocument()
@@ -195,28 +172,21 @@ public class Lecture
 
 	public void Mode(String mode)
 	{
-		System.out.println("Mode : " + mode);
-		System.out.println("DEBUG: Sommets objet = " + this.sommetsObjet);
-		System.out.println("DEBUG: Sommets size = " + (this.sommetsObjet != null ? this.sommetsObjet.size() : 0));
 
 		this.modeSelectionne = mode;
 
 		if (mode.equals("Dijkstra"))
 		{
-			System.out.println("DEBUG: Creating Dijikstra instance...");
-			try {
+			try
+			{
 				this.dijikstra = new Dijikstra(this.sommetsObjet);
-				System.out.println("DEBUG: Dijikstra initialized successfully");
 			} catch (Exception e) {
-				System.out.println("ERROR: Failed to initialize Dijikstra: " + e.getMessage());
 				e.printStackTrace();
 			}
 		}
 		else if (mode.equals("Bellman-Ford"))
 		{
-			System.out.println("DEBUG: Creating BellmanFord instance...");
 			this.bellmanFord = new BellmanFord(this.sommetsObjet);
-			System.out.println("DEBUG: BellmanFord initialized successfully");
 		}
 	}
 
@@ -233,18 +203,15 @@ public class Lecture
 		if (this.modeSelectionne.equals("Dijkstra") && this.dijikstra != null)
 		{
 			ArrayList<String> chemin = this.dijikstra.getChemin(destination);
-			System.out.println("Dijkstra chemin: " + chemin);
 			return chemin;
 		}
 		else if (this.modeSelectionne.equals("Bellman-Ford") && this.bellmanFord != null)
 		{
 			ArrayList<String> chemin = this.bellmanFord.getChemin(destination);
-			System.out.println("Bellman-Ford chemin: " + chemin);
 			return chemin;
 		}
 		else
 		{
-			System.out.println("Pas d'algorithme sélectionné ou initialisé");
 			return new ArrayList<>();
 		}
 	}

@@ -24,13 +24,11 @@ public class Dijikstra
 	{
 		if (this.sommets == null || this.sommets.isEmpty())
 		{
-			System.out.println("ERROR Dijikstra: Empty sommets");
 			return;
 		}
 
 		try {
 			String debut = this.sommets.get(0).getNom();
-			System.out.println("DEBUG Dijikstra: Starting from " + debut);
 			initialiser(debut);
 
 			while (!queue.isEmpty())
@@ -40,7 +38,6 @@ public class Dijikstra
 				Integer currentDist = distances.get(courant.nom);
 				if (currentDist == null)
 				{
-					System.out.println("ERROR Dijikstra: Unknown vertex " + courant.nom);
 					continue;
 				}
 
@@ -56,17 +53,13 @@ public class Dijikstra
 					}
 				}
 			}
-			System.out.println("DEBUG Dijikstra: Calculation complete. Distances: " + distances);
 		} catch (Exception e) {
-			System.out.println("ERROR Dijikstra calculCheminCourt: " + e.getMessage());
 			e.printStackTrace();
 		}
 	}
 
 	private void initialiser(String debut)
 	{
-		System.out.println("DEBUG Dijikstra initialiser: Initializing from " + debut);
-		System.out.println("DEBUG Dijikstra: Number of vertices = " + sommets.size());
 		
 		for (Sommet s : sommets)
 		{
@@ -76,14 +69,11 @@ public class Dijikstra
 		
 		if (!distances.containsKey(debut))
 		{
-			System.out.println("ERROR Dijikstra: Start vertex " + debut + " not in distances map!");
-			System.out.println("Available vertices: " + distances.keySet());
 			return;
 		}
 		
 		distances.put(debut, 0);
 		queue.add(new Noeud(debut, 0));
-		System.out.println("DEBUG Dijikstra: Initialization complete. Start distance = 0");
 	}
 
 	private void relaxer(String u, String v, int poids)
@@ -94,13 +84,11 @@ public class Dijikstra
 
 			if (distU == null)
 			{
-				System.out.println("ERROR Dijikstra relaxer: Source vertex " + u + " not found");
 				return;
 			}
 
 			if (distV == null)
 			{
-				System.out.println("ERROR Dijikstra relaxer: Destination vertex " + v + " not found");
 				return;
 			}
 
@@ -133,13 +121,11 @@ public class Dijikstra
 
 		if (destination == null || distances == null || !distances.containsKey(destination))
 		{
-			System.out.println("Dijikstra: Destination invalide ou introuvable");
 			return chemin;
 		}
 
 		if (distances.get(destination) == Integer.MAX_VALUE)
 		{
-			System.out.println("Dijikstra: Pas de chemin vers " + destination);
 			return chemin;
 		}
 
@@ -150,7 +136,6 @@ public class Dijikstra
 			courant = predecesseurs.get(courant);
 		}
 
-		System.out.println("Dijikstra: Distance = " + distances.get(destination) + ", Chemin = " + chemin);
 		return chemin;
 	}
 
