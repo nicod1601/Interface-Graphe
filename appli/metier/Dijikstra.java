@@ -4,13 +4,90 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.PriorityQueue;
 
+/**
+ * Implémentation de l'algorithme de Dijkstra pour calculer les plus courts chemins dans un graphe.
+ * Calcule les distances minimales depuis le premier sommet vers tous les autres.
+ * @author Nicolas D. & Marta AN.
+ */
+
 public class Dijikstra
 {
+
+	/**
+	 * Classe pour représenter une étape de Dijkstra.
+	 */
+	public static class EtapeDijkstra {
+		public String label;
+		public HashMap<String, Integer> distances;
+		public EtapeDijkstra(String label, HashMap<String, Integer> distances) {
+			this.label = label;
+			this.distances = distances;
+		}
+	}
+
+	/**
+	 * Calcule les distances étape par étape depuis un sommet de départ.
+	 * Retourne une liste d'objets EtapeDijkstra pour affichage du tableau.
+	 */
+	public ArrayList<EtapeDijkstra> calculerDistancesEtapes(String depart, String arrivee) {
+		ArrayList<EtapeDijkstra> etapes = new ArrayList<>();
+		HashMap<String, Integer> distances = new HashMap<>();
+		HashMap<String, String> predecesseurs = new HashMap<>();
+		PriorityQueue<Noeud> queue = new PriorityQueue<>();
+
+		for (Sommet s : this.sommets) {
+			distances.put(s.getNom(), Integer.MAX_VALUE);
+			predecesseurs.put(s.getNom(), null);
+		}
+		distances.put(depart, 0);
+		queue.add(new Noeud(depart, 0));
+		etapes.add(new EtapeDijkstra("Initialisation", new HashMap<>(distances)));
+
+		while (!queue.isEmpty()) {
+			Noeud courant = queue.poll();
+			Integer currentDist = distances.get(courant.nom);
+			if (currentDist == null) continue;
+			if (courant.distance > currentDist) continue;
+
+			Sommet sommet = trouverSommet(courant.nom);
+			if (sommet != null) {
+				for (Lien lien : sommet.getLiens()) {
+					String voisin = lien.getNom();
+					int nouvelleDistance = currentDist + lien.getDistance();
+					if (nouvelleDistance < distances.get(voisin)) {
+						distances.put(voisin, nouvelleDistance);
+						predecesseurs.put(voisin, courant.nom);
+						queue.add(new Noeud(voisin, nouvelleDistance));
+					}
+				}
+			}
+			etapes.add(new EtapeDijkstra("Étape " + (etapes.size()), new HashMap<>(distances)));
+		}
+		return etapes;
+	}
+
+	// Version static pour Noeud
+	static class Noeud implements Comparable<Noeud> {
+		String nom;
+		int distance;
+		Noeud(String nom, int distance) {
+			this.nom = nom;
+			this.distance = distance;
+		}
+		public int compareTo(Noeud o) {
+			return Integer.compare(this.distance, o.distance);
+		}
+	}
+
 	private ArrayList<Sommet> sommets;
 	private HashMap<String, Integer> distances;
 	private HashMap<String, String> predecesseurs;
 	private PriorityQueue<Noeud> queue;
 
+	/**
+	 * Constructeur de Dijikstra. Initialise et calcule les plus courts chemins.
+	 * @param sommets La liste des sommets du graphe.
+	 */
 	public Dijikstra(ArrayList<Sommet> sommets)
 	{
 		this.sommets = sommets;
@@ -115,6 +192,11 @@ public class Dijikstra
 		return null;
 	}
 
+	/**
+	 * Retourne le chemin le plus court vers la destination spécifiée.
+	 * @param destination Le nom du sommet de destination.
+	 * @return La liste des noms de sommets formant le chemin, ou une liste vide si inaccessible.
+	 */
 	public ArrayList<String> getChemin(String destination)
 	{
 		ArrayList<String> chemin = new ArrayList<>();
@@ -139,30 +221,25 @@ public class Dijikstra
 		return chemin;
 	}
 
+	/**
+	 * Retourne la map des distances calculées pour chaque sommet.
+	 * @return La map associant nom de sommet à distance.
+	 */
 	public HashMap<String, Integer> getDistance()
 	{
 		return distances;
 	}
 
+	/**
+	 * Retourne la map des prédécesseurs pour reconstruire les chemins.
+	 * @return La map associant nom de sommet à son prédécesseur.
+	 */
 	public HashMap<String, String> getPrecedent()
 	{
 		return predecesseurs;
 	}
 
-	private class Noeud implements Comparable<Noeud>
-	{
-		String nom;
-		int distance;
+	// ...existing code...
 
-		Noeud(String nom, int distance)
-		{
-			this.nom = nom;
-			this.distance = distance;
-		}
-
-		public int compareTo(Noeud autre)
-		{
-			return Integer.compare(this.distance, autre.distance);
-		}
-	}
+	
 }

@@ -6,6 +6,12 @@ import java.awt.event.MouseEvent;
 import javax.swing.*;
 import javax.swing.border.Border;
 
+/**
+ * Classe utilitaire pour la gestion du thème graphique de l'application.
+ * Définit les couleurs, polices et composants stylisés pour une interface cohérente.
+ * @author Nicolas D. & Marta AN.
+ */
+
 public class Theme
 {
 	// ── Palette — Dark Graph Theory ───────────────────────────────────────────
@@ -51,14 +57,21 @@ public class Theme
 			BorderFactory.createEmptyBorder(14, 14, 14, 14)
 		);
 	}
-
-	public static Border borderInput()
+	/**
+	 * Crée une bordure pour les cartes avec un cadre et un padding interne.
+	 * @return La bordure composée.
+	 */	public static Border borderInput()
 	{
 		return BorderFactory.createLineBorder(BORDER, 1);
 	}
 
 	// ── Composants ────────────────────────────────────────────────────────────
 
+	/**
+	 * Crée un label standard avec la police et couleur du thème.
+	 * @param text Le texte du label.
+	 * @return Le label stylisé.
+	 */
 	public static JLabel label(String text)
 	{
 		JLabel l = new JLabel(text);
@@ -67,6 +80,11 @@ public class Theme
 		return l;
 	}
 
+	/**
+	 * Crée un label de titre avec une police plus grande et couleur accentuée.
+	 * @param text Le texte du titre.
+	 * @return Le label de titre stylisé.
+	 */
 	public static JLabel labelTitle(String text)
 	{
 		JLabel l = new JLabel(text);
@@ -181,6 +199,10 @@ public class Theme
 		badge.repaint();
 	}
 
+	/**
+	 * Crée un panneau avec le fond du thème.
+	 * @return Le panneau stylisé.
+	 */
 	public static JPanel panel()
 	{
 		JPanel p = new JPanel();
@@ -188,6 +210,10 @@ public class Theme
 		return p;
 	}
 
+	/**
+	 * Crée un panneau avec le fond d'arrière-plan du thème.
+	 * @return Le panneau avec fond background.
+	 */
 	public static JPanel panelBackground()
 	{
 		JPanel p = new JPanel();
@@ -195,6 +221,10 @@ public class Theme
 		return p;
 	}
 
+	/**
+	 * Applique le style du thème à une table JTable.
+	 * @param table La table à styliser.
+	 */
 	public static void styleTable(JTable table)
 	{
 		table.setFont(FONT_NORMAL);

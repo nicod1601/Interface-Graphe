@@ -15,6 +15,12 @@ import java.util.Queue;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 
+/**
+ * Panneau pour afficher et visualiser le graphe avec ses sommets et liens.
+ * Gère le rendu graphique et l'animation des chemins.
+ * @author Nicolas D. & Marta AN.
+ */
+
 public class Graphe extends JPanel
 {
 	private static final int DOT_STEP = 22;
@@ -27,6 +33,10 @@ public class Graphe extends JPanel
 	private int largeurGraphe = 0;
 	private int hauteurGraphe = 0;
 
+	/**
+	 * Constructeur du panneau Graphe.
+	 * @param ctrl Le contrôleur de l'application.
+	 */
 	public Graphe(Controleur ctrl)
 	{
 		this.ctrl         = ctrl;
@@ -185,8 +195,14 @@ public class Graphe extends JPanel
 		g2d.translate(-offsetX, -offsetY);
 	}
 
+	/**
+	 * Actualise l'affichage du graphe en redessinant le panneau.
+	 */
 	public void actualiser() { repaint(); }
 
+	/**
+	 * Recharge les données des sommets depuis le contrôleur et reconstruit le graphe.
+	 */
 	public void fichier()
 	{
 		this.sommetsObjet = this.ctrl.getSommets();
@@ -195,6 +211,10 @@ public class Graphe extends JPanel
 		this.repaint();
 	}
 
+	/**
+	 * Sauvegarde la liste des sommets et met à jour le graphe.
+	 * @param liste La nouvelle liste des sommets.
+	 */
 	public void sauvegarder(ArrayList<Sommet> liste)
 	{
 		this.sommetsObjet = liste;
@@ -202,6 +222,10 @@ public class Graphe extends JPanel
 		this.actualiser();
 	}
 
+	/**
+	 * Affiche le chemin calculé en animant les sommets et liens sélectionnés.
+	 * @param chemin La liste des noms des sommets formant le chemin.
+	 */
 	public void voirChemin(ArrayList<String> chemin)
 	{
 		for (Cercle c : this.sommets) { c.setSelectionne(false); c.setVisite(false); }

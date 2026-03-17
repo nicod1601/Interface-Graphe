@@ -19,6 +19,12 @@ import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import javax.swing.Timer;
 
+/**
+ * Panneau du menu principal de l'application, gère les menus, boutons et actions utilisateur.
+ * Permet l'ouverture/sauvegarde de fichiers, le changement de mode et l'affichage du chemin.
+ * @author Nicolas D. & Marta AN.
+ */
+
 public class Menu extends JPanel implements ActionListener
 {
 	private JMenuBar menuBar;
@@ -31,6 +37,11 @@ public class Menu extends JPanel implements ActionListener
 	private Controleur ctrl;
 	private Appli appli;
 
+	/**
+	 * Constructeur du panneau Menu.
+	 * @param ctrl Le contrôleur de l'application.
+	 * @param appli L'instance principale de l'application.
+	 */
 	public Menu(Controleur ctrl, Appli appli)
 	{
 		this.ctrl = ctrl;
@@ -106,11 +117,18 @@ public class Menu extends JPanel implements ActionListener
 				this.menuMode.getItem(i).addActionListener(this);
 	}
 
+	/**
+	 * Gère les actions des menus et boutons (ouvrir, sauvegarder, modes, etc.).
+	 * @param e L'événement d'action déclenché.
+	 */
 	public void actionPerformed(ActionEvent e)
 	{
 		switch (e.getActionCommand()) {
 			case "📄 Ouvrir Fichier":
 				this.ouvrirFichier();
+				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
+				this.btnVoir.setEnabled(false);
+				this.appli.voirChemin(new ArrayList<>());
 				break;
 			case "💾 Enregistrer sous":
 				this.enregistrerSous();
@@ -130,6 +148,7 @@ public class Menu extends JPanel implements ActionListener
 				this.updateModeBadge("Dijkstra", Theme.SUCCESS);
 				this.btnVoir.setEnabled(true);
 				this.ctrl.Mode("Dijkstra");
+				this.appli.afficherTabMods();
 				break;
 			case "2️⃣ Bellman-Ford":
 				this.updateModeBadge("Bellman-Ford", Theme.WARNING);
@@ -139,7 +158,6 @@ public class Menu extends JPanel implements ActionListener
 			case "3️⃣ Désactiver":
 				this.updateModeBadge("Aucun", Theme.TEXT_MUTED);
 				this.btnVoir.setEnabled(false);
-				// Réinitialiser les couleurs du graphe
 				this.appli.voirChemin(new ArrayList<>());
 				break;
 			case "👁 Voir chemin":
@@ -152,6 +170,9 @@ public class Menu extends JPanel implements ActionListener
 		}
 	}
 
+	/**
+	 * Ouvre un sélecteur de fichier pour charger un graphe depuis un fichier XML.
+	 */
 	public void ouvrirFichier()
 	{
 		JFileChooser chooser = new JFileChooser();
@@ -170,6 +191,9 @@ public class Menu extends JPanel implements ActionListener
 	}
 
 
+	/**
+	 * Ouvre un sélecteur de fichier pour enregistrer le graphe sous un nouveau nom.
+	 */
 	public void enregistrerSous()
 	{
 		JFileChooser chooser = new JFileChooser();
@@ -228,10 +252,6 @@ public class Menu extends JPanel implements ActionListener
 		timer.start();
 	}
 
-	
-
-	// Utilise Theme.updateBadgeColor pour éviter de recréer des couleurs alpha
-	// qui causent le bug de superposition avec Metal L&F
 	private void updateModeBadge(String nom, java.awt.Color color) {
 		Theme.updateBadgeColor(this.btnMode, nom, color);
 	}

@@ -11,21 +11,25 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.io.File;
 import java.util.ArrayList;
 import javax.swing.BorderFactory;
 import javax.swing.BoxLayout;
 import javax.swing.DefaultCellEditor;
 import javax.swing.JButton;
-import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
-import javax.swing.table.DefaultTableModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
+import javax.swing.table.DefaultTableModel;
+
+/**
+ * Panneau d'édition pour gérer les sommets et les liens du graphe.
+ * Permet d'ajouter, supprimer et modifier les éléments via une interface graphique.
+ * @author Nicolas D. & Marta AN.
+ */
 
 public class Edit extends JPanel implements ActionListener
 {
@@ -49,6 +53,11 @@ public class Edit extends JPanel implements ActionListener
 	private GrapheCopie       graphe;
 	private ArrayList<Sommet> sommets;
 
+	/**
+	 * Constructeur du panneau Edit.
+	 * @param ctrl Le contrôleur de l'application.
+	 * @param appli L'instance principale de l'application.
+	 */
 	public Edit(Controleur ctrl, Appli appli)
 	{
 		this.ctrl  = ctrl;
@@ -271,6 +280,10 @@ public class Edit extends JPanel implements ActionListener
 
 	// ────────────────────────────────────────────────────────────────────────
 
+	/**
+	 * Gère les actions des boutons (Ajouter, Supprimer, Annuler, Rafraîchir, Appliquer).
+	 * @param e L'événement d'action déclenché.
+	 */
 	public void actionPerformed(ActionEvent e)
 	{
 		switch (e.getActionCommand())
@@ -284,11 +297,18 @@ public class Edit extends JPanel implements ActionListener
 		}
 	}
 
+	/**
+	 * Définit le document et initialise le tableau.
+	 * @param document Le contenu du document (non utilisé directement ici).
+	 */
 	public void setDocument(String document)
 	{
 		this.creationTableau();
 	}
 
+	/**
+	 * Crée et remplit le tableau avec les sommets et leurs liens depuis le contrôleur.
+	 */
 	public void creationTableau()
 	{
 		this.sommets = new ArrayList<>();
@@ -311,6 +331,10 @@ public class Edit extends JPanel implements ActionListener
 		}
 	}
 
+	/**
+	 * Modifie le tableau en ajoutant ou supprimant une ligne.
+	 * @param action "+" pour ajouter, "-" pour supprimer.
+	 */
 	public void modifierTableau(String action)
 	{
 		if (action.equals("+"))
@@ -324,6 +348,9 @@ public class Edit extends JPanel implements ActionListener
 		}
 	}
 
+	/**
+	 * Rafraîchit les données du tableau et met à jour la liste et le graphe.
+	 */
 	public void rafraichir()
 	{
 		this.sommets = new ArrayList<>();
@@ -363,11 +390,18 @@ public class Edit extends JPanel implements ActionListener
 		catch (NumberFormatException e) { return 0; }
 	}
 
+	/**
+	 * Applique les modifications en transmettant les sommets à l'application.
+	 */
 	public void appliquer()
 	{
 		this.appli.appliquer(this.sommets);
 		this.appli.afficher("Appliquer");
 	}
 
+	/**
+	 * Retourne la liste des sommets actuels.
+	 * @return La liste des sommets.
+	 */
 	public ArrayList<Sommet> getSommets() { return this.sommets; }
 }

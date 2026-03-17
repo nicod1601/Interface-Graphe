@@ -11,3 +11,4 @@
 ./appli/ihm/dessin/Lien.java
 ./appli/ihm/Graphe.java
 ./appli/ihm/GrapheCopie.java
+./appli/ihm/PanelDistance.java

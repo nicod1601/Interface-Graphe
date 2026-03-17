@@ -8,12 +8,19 @@ import java.awt.Toolkit;
 import java.util.ArrayList;
 import javax.swing.JFrame;
 
+/**
+ * Classe principale de l'application, gère la fenêtre et les différents panneaux (Menu, Edit, Graphe).
+ * C'est le point d'entrée de l'interface graphique.
+ * @author Nicolas D. & Marta AN.
+ */
+
 public class Appli extends JFrame
 {
 	private Menu       menu;
 	private Controleur ctrl;
 	private Edit       edit;
 	private Graphe     graphe;
+	private PanelDistance tabDistance;
 
 	public Appli(Controleur ctrl)
 	{
@@ -31,6 +38,7 @@ public class Appli extends JFrame
 		this.menu   = new Menu(this.ctrl, this);
 		this.edit   = null;
 		this.graphe = null;
+		this.tabDistance = null;
 
 		this.add(this.menu, BorderLayout.NORTH);
 
@@ -38,6 +46,10 @@ public class Appli extends JFrame
 		this.setVisible(true);
 	}
 
+	/**
+	 * Affiche les différents panneaux de l'interface selon le nom spécifié.
+	 * @param nom Le nom du panneau à afficher ("Graphe", "Edit", "Annuler", "Appliquer").
+	 */
 	public void afficher(String nom)
 	{
 		switch (nom)
@@ -73,6 +85,9 @@ public class Appli extends JFrame
 		this.repaint();
 	}
 
+	/**
+	 * Gère l'ouverture ou la sauvegarde d'un fichier via le panneau graphe.
+	 */
 	public void fichier()
 	{
 		this.graphe.fichier();
@@ -80,6 +95,10 @@ public class Appli extends JFrame
 		this.repaint();
 	}
 
+	/**
+	 * Applique les modifications de la liste de sommets au contrôleur et sauvegarde dans le graphe.
+	 * @param liste La liste des sommets à appliquer.
+	 */
 	public void appliquer(ArrayList<Sommet> liste)
 	{
 		if (this.ctrl   != null) this.ctrl.setSommets(liste);
@@ -88,6 +107,10 @@ public class Appli extends JFrame
 		this.repaint();
 	}
 
+	/**
+	 * Affiche le chemin calculé dans le panneau graphe.
+	 * @param chemin La liste des éléments du chemin à afficher.
+	 */
 	public void voirChemin(ArrayList<String> chemin)
 	{
 		if (this.graphe != null)
@@ -96,5 +119,15 @@ public class Appli extends JFrame
 			this.revalidate();
 			this.repaint();
 		}
+	}
+
+	public void afficherTabMods()
+	{
+		if (this.tabDistance != null) { this.tabDistance.setVisible(false);   this.remove(this.tabDistance);   }
+		this.tabDistance = new PanelDistance(this.ctrl);
+		this.add(this.tabDistance, BorderLayout.EAST);
+		this.tabDistance.setVisible(true);
+		this.revalidate();
+		this.repaint();
 	}
 }
